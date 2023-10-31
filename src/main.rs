@@ -1,12 +1,15 @@
 use async_openai::{
     config::OpenAIConfig,
-    types::{ChatCompletionRequestMessageArgs, CreateChatCompletionRequestArgs, Role},
+    types::{
+        ChatCompletionRequestMessage, ChatCompletionRequestMessageArgs,
+        CreateChatCompletionRequestArgs, Role,
+    },
     Client,
 };
 use dotenv::dotenv;
 use std::env;
 use std::error::Error;
-use std::io;
+use std::io::{self, Write};
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn Error>> {
@@ -26,12 +29,23 @@ async fn main() -> Result<(), Box<dyn Error>> {
     let config = OpenAIConfig::new().with_api_key(api_key);
     let client = Client::with_config(config);
 
-    let mut user_history = Vec::<String>::new();
-    let mut assistant_history = Vec::<String>::new();
+    // Define the conversation history
+    let mut conversation_history = Vec::<ChatCompletionRequestMessage>::new();
 
-    println!("Welcome to the GPT-3 chatbot demo. Start a conversation. Type 'exit' to quit.");
+    // Define the system personality
+    let system_initialization_message = ChatCompletionRequestMessageArgs::default()
+        .role(Role::System)
+        .content("You are a friend named 'Ello' that holds conversation in Spanish at a beginner level. You must come up with interesting answers about yourself when asked questions,including personal information like where you live, your interests, and what you do. Be creative and have fun!.")
+        .build()?;
+
+    conversation_history.push(system_initialization_message);
+
+    println!("Welcome to Ello! Start a conversation. Type 'exit' to quit.");
 
     loop {
+        print!("\nYou: ");
+
+        io::stdout().flush().unwrap();
 
         let mut user_input = String::new();
 
@@ -43,34 +57,41 @@ async fn main() -> Result<(), Box<dyn Error>> {
 
         if user_input == "exit" {
             break;
+        } else {
+            conversation_history.push(
+                ChatCompletionRequestMessageArgs::default()
+                    .role(Role::User)
+                    .content(user_input.clone())
+                    .build()?,
+            );
         }
 
         // Make a request to the API
         let request = CreateChatCompletionRequestArgs::default()
-        .max_tokens(512u16)
-        .model("gpt-3.5-turbo")
-        .messages([
-            // Define the system personality
-            ChatCompletionRequestMessageArgs::default()
-                .role(Role::System)
-                .content("You are a friend that holds conversation in Spanish, adjusting the difficulty level depending on the flow of the conversation.")
-                .build()?,
-            ChatCompletionRequestMessageArgs::default()
-                .role(Role::User)
-                .content(user_input)
-                .build()?,
-        ])
-        .build()?;
+            .max_tokens(512u16)
+            .model("gpt-3.5-turbo")
+            .messages(conversation_history.clone())
+            .build()?;
 
         let response = client.chat().create(request).await?;
 
         for choice in response.choices {
             match choice.message.content {
-                Some(content) => println!("{}", content),
-                None => println!("No content"),
+                Some(content) => {
+                    conversation_history.push(
+                        ChatCompletionRequestMessageArgs::default()
+                            .role(Role::Assistant)
+                            .content(content.clone())
+                            .build()?,
+                    );
+                    println!("\nEllo: {}", content)
+                }
+                None => println!("Error: No content in response."),
             }
         }
     }
+
+    println!("Conversation ended.");
 
     Ok(())
 }
