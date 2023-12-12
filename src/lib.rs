@@ -3,7 +3,10 @@ use std::error::Error;
 
 use async_openai::{
     config::OpenAIConfig,
-    types::{AssistantObject, CreateAssistantRequestArgs, CreateThreadRequestArgs},
+    types::{
+        AssistantObject, CreateAssistantRequestArgs, CreateMessageRequestArgs,
+        CreateRunRequestArgs, CreateThreadRequestArgs, MessageContent, RunStatus,
+    },
     Client,
 };
 
@@ -17,7 +20,7 @@ pub async fn run() -> Result<(), Box<dyn Error>> {
     // Main terminal input loop
     loop {
         println!(
-            "--- Welcome to Ello. Enter a command or 'help' to see a list of available commands."
+            "--- Welcome to Ello. Enter a command use 'help' to see a list of available commands."
         );
         let mut command = String::new();
         std::io::stdin().read_line(&mut command)?;
@@ -25,19 +28,9 @@ pub async fn run() -> Result<(), Box<dyn Error>> {
         match command.trim() {
             "build" => build_assistant(&client, &mut assistants).await?,
             "list" => list_assistants(&assistants),
-            "chat" => {
-                if assistants.is_empty() {
-                    println!("--- You currently have 0 assistants. Use 'build' to create a new assistant.");
-                    continue;
-                };
-                println!(
-                    "--- You currently have {} assistants:",
-                    assistants.iter().count()
-                );
-            } // chat with an assistant
-            "inspect" => (), // inspect an assistant
-            "update" => (),  // update an assistant
-            "delete" => (),  // delete an assistant
+            "chat" => start_chat(&client, &assistants).await?,
+            "update" => (), // update an assistant
+            "delete" => (), // delete an assistant
             "help" => {
                 println!("TODO: Display help message")
             }
@@ -54,23 +47,24 @@ async fn build_assistant(
     client: &Client<OpenAIConfig>,
     assistants: &mut Vec<AssistantObject>,
 ) -> Result<(), Box<dyn Error>> {
-    //ask the user for the name of the assistant
+    // Ask the user for the name of the assistant
     println!("--- Enter the name of your new assistant");
     let mut assistant_name = String::new();
     std::io::stdin().read_line(&mut assistant_name)?;
     assistant_name = assistant_name.trim().to_string();
 
-    //ask the user for the instructions for the assistant
+    // Ask the user for the instructions for the assistant
     println!("--- Enter the instructions for your new assistant");
     let mut instructions = String::new();
     std::io::stdin().read_line(&mut instructions)?;
 
-    // create an assistant
+    // Create an assistant
     let assistant_request = CreateAssistantRequestArgs::default()
         .name(&assistant_name)
         .instructions(&instructions)
         .model("gpt-3.5-turbo-1106")
         .build()?;
+
     let assistant = client.assistants().create(assistant_request).await?;
 
     assistants.push(assistant);
@@ -80,19 +74,21 @@ async fn build_assistant(
 
 // List all existing assistants
 fn list_assistants(assistants: &Vec<AssistantObject>) {
-    let assistant_count = assistants.len();
-    match assistant_count {
+    match assistants.len() {
         0 => {
-            println!("--- You currently have 0 assistants. Use 'create' to build a new assistant.")
+            println!("--- You have no existing assistants. Use 'create' to build a new assistant.")
         }
         _ => {
-            println!("--- You currently have {} assistants:", assistant_count);
+            println!("--- Your assistants:");
             assistants.iter().for_each(|a| {
                 println!(
-                    "Name:{}",
+                    "Name: {}\tInstructions: {}",
                     a.name
                         .as_ref()
-                        .expect("All assistants are created with a name")
+                        .expect("All assistants are created with a name"),
+                    a.instructions
+                        .as_ref()
+                        .expect("All assistants are given instructions.")
                 );
             });
         }
@@ -101,11 +97,157 @@ fn list_assistants(assistants: &Vec<AssistantObject>) {
 
 async fn start_chat(
     client: &Client<OpenAIConfig>,
-    assistant_id: &String,
+    assistants: &Vec<AssistantObject>,
 ) -> Result<(), Box<dyn Error>> {
+    let query = [("limit", "1")]; // limit the responses to 1 message
+
+    list_assistants(assistants);
+    if assistants.is_empty() {
+        return Ok(());
+    }
+
+    let assistant_names: Vec<&String> = assistants
+        .iter()
+        .map(|a| {
+            a.name
+                .as_ref()
+                .expect("All assistants are created with a name")
+        })
+        .collect();
+
+    let assistant_name;
+    loop {
+        // Prompt the user for the assistant name
+        let mut input_name = String::new();
+        println!("--- Which assistant would you like to chat with:");
+        std::io::stdin().read_line(&mut input_name)?;
+        input_name = input_name.trim().to_string();
+        dbg!(&input_name, &assistant_names);
+
+        if input_name.as_str() == "exit" {
+            return Ok(());
+        } else if !assistant_names.contains(&&input_name) {
+            println!("--- That name does not match an existing assistant. Enter the name of an existing assistant or use 'exit' to return to the main menu.");
+            continue;
+        }
+        assistant_name = input_name;
+        break;
+    }
+
+    // Get the assistant id
+    let assistant_id = &assistants
+        .iter()
+        .find(|a| a.name.as_ref().unwrap() == &assistant_name)
+        .expect("At this point the assistant is known to exist")
+        .id;
+
     // Create a new thread
     let thread_request = CreateThreadRequestArgs::default().build()?;
     let thread = client.threads().create(thread_request.clone()).await?;
+
+    // Begin a chat
+    println!("--- Starting a new chat. Use 'exit' to end the chat and return to the main menu.");
+    println!("--- How can I help you?");
+
+    loop {
+        print!("User: ");
+        // Get user input
+        let mut input = String::new();
+        std::io::stdin().read_line(&mut input).unwrap();
+
+        // Break out of the loop if the user enters exit()
+        if input.trim() == "exit" {
+            break;
+        }
+
+        // Create a message and attach it to the current thread
+        let message_request = CreateMessageRequestArgs::default()
+            .role("user")
+            .content(input.clone())
+            .build()?;
+
+        let _message = client
+            .threads()
+            .messages(&thread.id)
+            .create(message_request)
+            .await?;
+
+        // Create a run for the assistant using the current thread
+        let run_request = CreateRunRequestArgs::default()
+            .assistant_id(assistant_id)
+            .build()?;
+        let run = client
+            .threads()
+            .runs(&thread.id)
+            .create(run_request)
+            .await?;
+
+        // Wait for the run to complete
+        let mut awaiting_response = true;
+        while awaiting_response {
+            // Retrieve the run
+            let run = client.threads().runs(&thread.id).retrieve(&run.id).await?;
+
+            // Check the status of the run
+            match run.status {
+                RunStatus::Completed => {
+                    awaiting_response = false;
+
+                    // Access the response of the run (current list of messages)
+                    let response = client.threads().messages(&thread.id).list(&query).await?;
+
+                    // Get the latest message id from the response (id of the first message in the list)
+                    let message_id = response.data.get(0).unwrap().id.clone();
+
+                    // Retrieve the message from the thread
+                    let message = client
+                        .threads()
+                        .messages(&thread.id)
+                        .retrieve(&message_id)
+                        .await?;
+
+                    // Get the content from the message
+                    let content = message.content.get(0).unwrap();
+
+                    // Get the text from the content
+                    let text = match content {
+                        MessageContent::Text(text) => text.text.value.clone(),
+                        MessageContent::ImageFile(_) => {
+                            panic!("imaged are not supported in the terminal")
+                        }
+                    };
+
+                    // Print the text
+                    println!("--- Response: {}", text);
+                    println!("");
+                }
+                RunStatus::Failed => {
+                    awaiting_response = false;
+                    println!("--- Run Failed: {:#?}", run);
+                }
+                RunStatus::Queued => {
+                    println!("--- Run Queued");
+                }
+                RunStatus::Cancelling => {
+                    println!("--- Run Cancelling");
+                }
+                RunStatus::Cancelled => {
+                    println!("--- Run Cancelled");
+                }
+                RunStatus::Expired => {
+                    println!("--- Run Expired");
+                }
+                RunStatus::RequiresAction => {
+                    println!("--- Run Requires Action");
+                }
+                RunStatus::InProgress => {
+                    println!("--- Waiting for response...");
+                }
+            }
+            // Wait for 1 second before checking the status again
+            std::thread::sleep(std::time::Duration::from_secs(1));
+        }
+    }
 
     Ok(())
 }
