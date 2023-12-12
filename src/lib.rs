@@ -8,13 +8,13 @@ use async_openai::{
 };
 
 pub async fn run() -> Result<(), Box<dyn Error>> {
-    // Load environment variables
     dotenv().ok();
 
-    // create a client
+    // Create a client
     let client = Client::new();
     let mut assistants: Vec<AssistantObject> = Vec::new();
 
+    // Main terminal input loop
     loop {
         println!(
             "--- Welcome to Ello. Enter a command or 'help' to see a list of available commands."
@@ -23,17 +23,24 @@ pub async fn run() -> Result<(), Box<dyn Error>> {
         std::io::stdin().read_line(&mut command)?;
 
         match command.trim() {
-            "create" => {
-                let assistant = create_assistant(&client).await?;
-                assistants.push(assistant);
+            "build" => build_assistant(&client, &mut assistants).await?,
+            "list" => list_assistants(&assistants),
+            "chat" => {
+                if assistants.is_empty() {
+                    println!("--- You currently have 0 assistants. Use 'build' to create a new assistant.");
+                    continue;
+                };
+                println!(
+                    "--- You currently have {} assistants:",
+                    assistants.iter().count()
+                );
+            } // chat with an assistant
+            "inspect" => (), // inspect an assistant
+            "update" => (),  // update an assistant
+            "delete" => (),  // delete an assistant
+            "help" => {
+                println!("TODO: Display help message")
             }
-            "list" => {assistants.iter().for_each(|a| {
-                println!("Id: {}\n Name:{:?}", a.id, a.name);
-            })},   // list all assistants
-            "chat" => (),   // chat with an assistant
-            "update" => (), // update an assistant
-            "delete" => (), // delete an assistant
-            "help" => {println!("TODO: Display help message")},
             "exit" => break,
             _ => continue,
         }
@@ -42,13 +49,16 @@ pub async fn run() -> Result<(), Box<dyn Error>> {
     Ok(())
 }
 
-pub async fn create_assistant(
+// Prompt user to build a new assistant
+async fn build_assistant(
     client: &Client<OpenAIConfig>,
-) -> Result<AssistantObject, Box<dyn Error>> {
+    assistants: &mut Vec<AssistantObject>,
+) -> Result<(), Box<dyn Error>> {
     //ask the user for the name of the assistant
     println!("--- Enter the name of your new assistant");
     let mut assistant_name = String::new();
     std::io::stdin().read_line(&mut assistant_name)?;
+    assistant_name = assistant_name.trim().to_string();
 
     //ask the user for the instructions for the assistant
     println!("--- Enter the instructions for your new assistant");
@@ -63,17 +73,39 @@ pub async fn create_assistant(
         .build()?;
     let assistant = client.assistants().create(assistant_request).await?;
 
-    Ok(assistant)
+    assistants.push(assistant);
+
+    Ok(())
 }
 
-pub async fn chat(
+// List all existing assistants
+fn list_assistants(assistants: &Vec<AssistantObject>) {
+    let assistant_count = assistants.len();
+    match assistant_count {
+        0 => {
+            println!("--- You currently have 0 assistants. Use 'create' to build a new assistant.")
+        }
+        _ => {
+            println!("--- You currently have {} assistants:", assistant_count);
+            assistants.iter().for_each(|a| {
+                println!(
+                    "Name:{}",
+                    a.name
+                        .as_ref()
+                        .expect("All assistants are created with a name")
+                );
+            });
+        }
+    }
+}
+
+async fn start_chat(
     client: &Client<OpenAIConfig>,
     assistant_id: &String,
 ) -> Result<(), Box<dyn Error>> {
-    // create a thread
+    // Create a new thread
     let thread_request = CreateThreadRequestArgs::default().build()?;
     let thread = client.threads().create(thread_request.clone()).await?;
-
 
     Ok(())
 }
