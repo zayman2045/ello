@@ -17,25 +17,25 @@ pub async fn run() -> Result<(), Box<dyn Error>> {
     let client = Client::new();
     let mut assistants: Vec<AssistantObject> = Vec::new();
 
+    // Welcome message
+    println!(
+        "--- Welcome to Ello. Enter a command or use 'help' to see a list of available commands.\n"
+    );
+
     // Main terminal input loop
     loop {
-        println!(
-            "--- Welcome to Ello. Enter a command use 'help' to see a list of available commands."
-        );
         let mut command = String::new();
         std::io::stdin().read_line(&mut command)?;
 
         match command.trim() {
+            "exit" => break,
             "build" => build_assistant(&client, &mut assistants).await?,
             "list" => list_assistants(&assistants),
-            "chat" => start_chat(&client, &assistants).await?,
+            "chat" => run_chat(&client, &assistants).await?,
             "update" => (), // update an assistant
             "delete" => (), // delete an assistant
-            "help" => {
-                println!("TODO: Display help message")
-            }
-            "exit" => break,
-            _ => continue,
+            "help" => display_help(),
+            _ => display_help(),
         }
     }
 
@@ -48,13 +48,13 @@ async fn build_assistant(
     assistants: &mut Vec<AssistantObject>,
 ) -> Result<(), Box<dyn Error>> {
     // Ask the user for the name of the assistant
-    println!("--- Enter the name of your new assistant");
+    println!("--- Enter the name of your new assistant:\n");
     let mut assistant_name = String::new();
     std::io::stdin().read_line(&mut assistant_name)?;
     assistant_name = assistant_name.trim().to_string();
 
     // Ask the user for the instructions for the assistant
-    println!("--- Enter the instructions for your new assistant");
+    println!("--- Enter the instructions for your new assistant:\n");
     let mut instructions = String::new();
     std::io::stdin().read_line(&mut instructions)?;
 
@@ -69,6 +69,9 @@ async fn build_assistant(
 
     assistants.push(assistant);
 
+    println!("--- Assistant created. Use 'chat' to begin a new chat with a created assistant.\n");
+
+
     Ok(())
 }
 
@@ -76,13 +79,15 @@ async fn build_assistant(
 fn list_assistants(assistants: &Vec<AssistantObject>) {
     match assistants.len() {
         0 => {
-            println!("--- You have no existing assistants. Use 'create' to build a new assistant.")
+            println!(
+                "--- You have no existing assistants. Use 'create' to build a new assistant.\n"
+            )
         }
         _ => {
-            println!("--- Your assistants:");
+            println!("--- Your assistants:\n");
             assistants.iter().for_each(|a| {
                 println!(
-                    "Name: {}\tInstructions: {}",
+                    "{}\t{}",
                     a.name
                         .as_ref()
                         .expect("All assistants are created with a name"),
@@ -95,7 +100,7 @@ fn list_assistants(assistants: &Vec<AssistantObject>) {
     }
 }
 
-async fn start_chat(
+async fn run_chat(
     client: &Client<OpenAIConfig>,
     assistants: &Vec<AssistantObject>,
 ) -> Result<(), Box<dyn Error>> {
@@ -119,15 +124,15 @@ async fn start_chat(
     loop {
         // Prompt the user for the assistant name
         let mut input_name = String::new();
-        println!("--- Which assistant would you like to chat with:");
+        println!("--- Which assistant would you like to chat with:\n");
         std::io::stdin().read_line(&mut input_name)?;
         input_name = input_name.trim().to_string();
-        dbg!(&input_name, &assistant_names);
 
         if input_name.as_str() == "exit" {
+            println!("--- Exiting chat.\n");
             return Ok(());
         } else if !assistant_names.contains(&&input_name) {
-            println!("--- That name does not match an existing assistant. Enter the name of an existing assistant or use 'exit' to return to the main menu.");
+            println!("--- That name does not match an existing assistant. Enter the name of an existing assistant or use 'exit' to return to the main menu.\n");
             continue;
         }
         assistant_name = input_name;
@@ -146,17 +151,16 @@ async fn start_chat(
     let thread = client.threads().create(thread_request.clone()).await?;
 
     // Begin a chat
-    println!("--- Starting a new chat. Use 'exit' to end the chat and return to the main menu.");
-    println!("--- How can I help you?");
+    println!("--- Starting a new chat. Use 'exit' to end the chat.\n");
 
     loop {
-        print!("User: ");
         // Get user input
         let mut input = String::new();
         std::io::stdin().read_line(&mut input).unwrap();
 
         // Break out of the loop if the user enters exit()
         if input.trim() == "exit" {
+            println!("--- Exiting chat.\n");
             break;
         }
 
@@ -218,8 +222,7 @@ async fn start_chat(
                     };
 
                     // Print the text
-                    println!("--- Response: {}", text);
-                    println!("");
+                    println!("--- Response:\n{}\n", text);
                 }
                 RunStatus::Failed => {
                     awaiting_response = false;
@@ -250,4 +253,13 @@ async fn start_chat(
     }
 
     Ok(())
+}
+
+fn display_help() {
+    println!("--- Commands:");
+    println!("\tbuild\tCreate a new assistant.");
+    println!("\tlist\tList all the created assistants.");
+    println!("\tchat\tStart a chat with the assistants.");
+    println!("\texit\tExit the application.");
+    println!("");
 }
