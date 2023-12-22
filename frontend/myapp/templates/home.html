@@ -4,17 +4,13 @@
 <html>
   <head>
     <title>Ello</title>
-    <link
-      rel="stylesheet"
-      type="text/css"
-      href="{% static 'css/style.css' %}"
-    />
+    <link rel="stylesheet" type="text/css" href="{% static 'css/home.css' %}" />
   </head>
   <body>
-    <h1>Say Hello to Ello!</h1>
-    <form method="post">
-      {% csrf_token %} {{ form.as_p }}
-      <input type="submit" value="Login" />
-    </form>
+    <div class="home">
+      <h1>Say Hello to Ello!</h1>
+      <p>Ello lets you build and interact with your own AI assistants.</p>
+      <a href="/build" class="btn">Build</a>
+    </div>
   </body>
 </html>

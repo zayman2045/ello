@@ -1,0 +1,42 @@
+body {
+  font-family: Arial, sans-serif;
+  margin: 0; /* Remove margin */
+  height: 100vh; /* Full viewport height */
+  display: grid; /* Use CSS Grid */
+  place-items: center; /* Center content */
+  background-color: #1e1e1e;
+  color: #ffffff;
+}
+
+div {
+  text-align: center;
+  display: flex; /* Use CSS Flexbox */
+  flex-direction: column; /* Stack children vertically */
+  justify-content: center; /* Center children vertically */
+  align-items: center; /* Center children horizontally */
+}
+
+h1 {
+  color: #50c878;
+  text-align: center;
+}
+
+p {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.btn {
+  background-color: #50c878;
+  border: none;
+  border-radius: 5px;
+  color: black;
+  padding: 12px 30px;
+  cursor: pointer;
+  font-size: 16px;
+  text-decoration: none;
+}
+
+.btn:hover {
+  background-color: orange;
+}
