@@ -1,19 +1,22 @@
 body {
   font-family: Arial, sans-serif;
-  margin: 0; /* Remove margin */
-  height: 100vh; /* Full viewport height */
-  display: grid; /* Use CSS Grid */
-  place-items: center; /* Center content */
+  margin: 0;
+  height: 100vh; 
+  display: grid;
+  place-items: center; 
   background-color: #1e1e1e;
   color: #ffffff;
 }
 
 div {
   text-align: center;
-  display: flex; /* Use CSS Flexbox */
-  flex-direction: column; /* Stack children vertically */
-  justify-content: center; /* Center children vertically */
-  align-items: center; /* Center children horizontally */
+  display: flex;
+  flex-direction: column; 
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  border-radius: 50px;
+  background-color: #131212;
 }
 
 h1 {
