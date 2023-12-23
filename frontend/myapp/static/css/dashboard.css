@@ -50,10 +50,21 @@ nav h1 {
 .message-input {
   flex-grow: 1;
   margin-right: 10px;
+  background-color: #333;
+  color: #fff;
+  border-radius: 5px;
 }
 
 .submit-button {
   padding: 10px;
+  background-color: #50c878;
+  color: black;
+  border-radius: 5px;
+  transition: background-color 0.3s ease;
+}
+
+.submit-button:hover {
+  background-color: orange;
 }
 
 a {
@@ -64,9 +75,11 @@ a {
   background-color: #1e1e1e;
   color: white;
   border-radius: 5px;
-  transition: background-color 0.3s ease;
+  transition: background-color 0.5s ease;
+  transition: color 0.5s ease;
 }
 
 a:hover {
   background-color: #50c878;
+  color: black;
 }
