@@ -1,0 +1,56 @@
+body {
+    background-color: #1e1e1e;
+    color: #fff;
+    height: 100vh;
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+h1 {
+    color: #50c878;
+    margin: 0 0 20px 0;
+    padding-top: 20px;
+    text-align: center;
+}
+
+.build-form {
+    max-width: 500px;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: #2a2a2a;
+    border-radius: 5px;
+}
+
+.build-form input,
+.build-form textarea {
+    width: calc(100% - 20px);
+    margin: 10px 0;
+    padding: 10px;
+    border: none;
+    border-radius: 3px;
+    background-color: #333;
+    color: #fff;
+}
+
+.build-form label {
+    display: block;
+    margin-bottom: 5px;
+    color: #50c878;
+}
+
+.build-form .submit-button {
+    width: 100%;
+    padding: 10px;
+    border: none;
+    border-radius: 3px;
+    background-color: #50c878;
+    color: #1e1e1e;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.build-form .submit-button:hover {
+    background-color: #66d992;
+}
+  

@@ -1,9 +1,9 @@
 body {
   font-family: Arial, sans-serif;
   margin: 0;
-  height: 100vh; 
+  height: 100vh;
   display: grid;
-  place-items: center; 
+  place-items: center;
   background-color: #1e1e1e;
   color: #ffffff;
 }
@@ -11,7 +11,7 @@ body {
 div {
   text-align: center;
   display: flex;
-  flex-direction: column; 
+  flex-direction: column;
   justify-content: center;
   align-items: center;
   padding: 20px;

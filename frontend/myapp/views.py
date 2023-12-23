@@ -6,3 +6,6 @@ def home(request):
 
 def dashboard(request):
     return render(request, 'dashboard.html')
+
+def build(request):
+    return render(request, 'build.html')
