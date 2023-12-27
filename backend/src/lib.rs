@@ -2,6 +2,8 @@ use colored::*;
 use dotenv::dotenv;
 use std::error::Error;
 
+pub mod assistants;
+
 use async_openai::{
     config::OpenAIConfig,
     types::{
