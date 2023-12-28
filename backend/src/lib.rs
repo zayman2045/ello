@@ -3,12 +3,12 @@ use dotenv::dotenv;
 use std::error::Error;
 
 use actix_web::{App, HttpServer, web};
-use assistants::{create_assistant, get_assistant};
+use assistants::create_assistant::create_assistant;
 
 use async_openai::{
     config::OpenAIConfig,
     types::{
-        AssistantObject, CreateAssistantRequestArgs, CreateMessageRequestArgs,
+        AssistantObject, CreateMessageRequestArgs,
         CreateRunRequestArgs, CreateThreadRequestArgs, MessageContent, RunStatus,
     },
     Client,
@@ -38,98 +38,14 @@ pub async fn run() -> std::io::Result<()> {
         .await
 }
 
-// Prompt user to build a new assistant
-async fn build_assistant(
-    client: &Client<OpenAIConfig>,
-    assistants: &mut Vec<AssistantObject>,
-) -> Result<(), Box<dyn Error>> {
-    // Ask the user for the name of the assistant
-
-    let mut assistant_name = String::new();
-    std::io::stdin().read_line(&mut assistant_name)?;
-    assistant_name = assistant_name.trim().to_string();
-
-    // Ask the user for the instructions for the assistant
-
-    let mut instructions = String::new();
-    std::io::stdin().read_line(&mut instructions)?;
-
-    // Create an assistant
-    let assistant_request = CreateAssistantRequestArgs::default()
-        .name(&assistant_name)
-        .instructions(&instructions)
-        .model("gpt-3.5-turbo-1106")
-        .build()?;
-
-    let assistant = client.assistants().create(assistant_request).await?;
-
-    assistants.push(assistant);
-
-    Ok(())
-}
-
-// List all existing assistants
-fn list_assistants(assistants: &Vec<AssistantObject>) {
-    match assistants.len() {
-        0 => {}
-        _ => {
-            assistants.iter().for_each(|a| {
-                println!(
-                    "\t{}\t{}",
-                    a.name
-                        .as_ref()
-                        .expect("All assistants are created with a name"),
-                    a.instructions
-                        .as_ref()
-                        .expect("All assistants are given instructions.")
-                );
-            });
-        }
-    }
-}
-
 async fn run_chat(
     client: &Client<OpenAIConfig>,
     assistants: &Vec<AssistantObject>,
 ) -> Result<(), Box<dyn Error>> {
     let query = [("limit", "1")]; // limit the responses to 1 message
 
-    list_assistants(assistants);
-    if assistants.is_empty() {
-        return Ok(());
-    }
-
-    let assistant_names: Vec<&String> = assistants
-        .iter()
-        .map(|a| {
-            a.name
-                .as_ref()
-                .expect("All assistants are created with a name")
-        })
-        .collect();
-
-    let assistant_name;
-    loop {
-        // Prompt the user for the assistant name
-        let mut input_name = String::new();
-        std::io::stdin().read_line(&mut input_name)?;
-        input_name = input_name.trim().to_string();
-
-        if input_name.as_str() == "exit" {
-            return Ok(());
-        } else if !assistant_names.contains(&&input_name) {
-            continue;
-        }
-        assistant_name = input_name;
-        break;
-    }
-
     // Get the assistant id
-    let assistant_id = &assistants
-        .iter()
-        .find(|a| a.name.as_ref().unwrap() == &assistant_name)
-        .expect("At this point the assistant is known to exist")
-        .id;
+    let assistant_id = String::from("Placeholder");
 
     // Create a new thread
     let thread_request = CreateThreadRequestArgs::default().build()?;
