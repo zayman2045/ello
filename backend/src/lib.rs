@@ -1,7 +1,8 @@
 pub mod assistants;
+pub mod threads;
+
 use dotenv::dotenv;
 use std::error::Error;
-
 use actix_web::{App, HttpServer, web};
 use assistants::create_assistant::create_assistant;
 

@@ -1,1 +1,0 @@
-// TODO: Send message to an assistant and return it's response
