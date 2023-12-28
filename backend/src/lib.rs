@@ -1,8 +1,9 @@
-use colored::*;
+pub mod assistants;
 use dotenv::dotenv;
 use std::error::Error;
 
-pub mod assistants;
+use actix_web::{App, HttpServer, web};
+use assistants::{create_assistant, get_assistant};
 
 use async_openai::{
     config::OpenAIConfig,
@@ -13,38 +14,28 @@ use async_openai::{
     Client,
 };
 
-pub async fn run() -> Result<(), Box<dyn Error>> {
+struct ClientState {
+    client: Client<OpenAIConfig>,
+}
+
+
+pub async fn run() -> std::io::Result<()> {
+    
+    // Create a client from the API key in the .env file
     dotenv().ok();
-
-    // Create a client
     let client = Client::new();
-    let mut assistants: Vec<AssistantObject> = Vec::new();
 
-    // Welcome message
-    println!(
-        "{}\n",
-        "--- Welcome to Ello. Enter a command or use 'help' to see a list of available commands."
-            .cyan()
-    );
-
-    // Main terminal input loop
-    loop {
-        let mut command = String::new();
-        std::io::stdin().read_line(&mut command)?;
-
-        match command.trim() {
-            "exit" => break,
-            "build" => build_assistant(&client, &mut assistants).await?,
-            "list" => list_assistants(&assistants),
-            "chat" => run_chat(&client, &assistants).await?,
-            "update" => (), // update an assistant
-            "delete" => (), // delete an assistant
-            "help" => display_help(),
-            _ => display_help(),
-        }
-    }
-
-    Ok(())
+    // Run HTTP server
+    HttpServer::new(move || {
+        App::new()
+        .app_data(web::Data::new(ClientState {
+            client: client.clone(),
+        }))
+        .service(create_assistant)
+    })
+        .bind(("127.0.0.1", 8080))?
+        .run()
+        .await
 }
 
 // Prompt user to build a new assistant
@@ -53,16 +44,13 @@ async fn build_assistant(
     assistants: &mut Vec<AssistantObject>,
 ) -> Result<(), Box<dyn Error>> {
     // Ask the user for the name of the assistant
-    println!("{}", "--- Enter the name of your new assistant:\n".cyan());
+
     let mut assistant_name = String::new();
     std::io::stdin().read_line(&mut assistant_name)?;
     assistant_name = assistant_name.trim().to_string();
 
     // Ask the user for the instructions for the assistant
-    println!(
-        "{}",
-        "--- Enter the instructions for your new assistant:\n".cyan()
-    );
+
     let mut instructions = String::new();
     std::io::stdin().read_line(&mut instructions)?;
 
@@ -77,28 +65,20 @@ async fn build_assistant(
 
     assistants.push(assistant);
 
-    println!(
-        "{}",
-        "--- Assistant created. Use 'chat' to begin a new chat with a created assistant.\n".cyan()
-    );
-
     Ok(())
 }
 
 // List all existing assistants
 fn list_assistants(assistants: &Vec<AssistantObject>) {
     match assistants.len() {
-        0 => {
-            println!("{}", "--- You have no existing assistants. Use 'create' to build a new assistant.\n".yellow());
-        }
+        0 => {}
         _ => {
-            println!("{}", "--- Your assistants:\n".cyan());
             assistants.iter().for_each(|a| {
                 println!(
                     "\t{}\t{}",
                     a.name
                         .as_ref()
-                        .expect("All assistants are created with a name").green(),
+                        .expect("All assistants are created with a name"),
                     a.instructions
                         .as_ref()
                         .expect("All assistants are given instructions.")
@@ -132,16 +112,12 @@ async fn run_chat(
     loop {
         // Prompt the user for the assistant name
         let mut input_name = String::new();
-        println!("{}", "--- Which assistant would you like to chat with:\n".cyan());
         std::io::stdin().read_line(&mut input_name)?;
         input_name = input_name.trim().to_string();
 
         if input_name.as_str() == "exit" {
-            println!("{}", "--- Exiting chat.\n".cyan());
             return Ok(());
         } else if !assistant_names.contains(&&input_name) {
-            println!("{}", "--- That name does not match an existing assistant.".yellow());
-            println!("{}", "--- Enter the name of an existing assistant or use 'exit' to return to the main menu.\n".yellow());
             continue;
         }
         assistant_name = input_name;
@@ -160,10 +136,8 @@ async fn run_chat(
     let thread = client.threads().create(thread_request.clone()).await?;
 
     // Begin a chat
-    println!("{}", "--- New chat started. Use 'exit' to end the chat.\n".cyan());
 
     loop {
-        println!("{}", "--- You:".purple());
         // Get user input
         let mut input = String::new();
         std::io::stdin().read_line(&mut input).unwrap();
@@ -171,10 +145,9 @@ async fn run_chat(
 
         // Break out of the loop if the user enters exit()
         if input.trim() == "exit" {
-            println!("{}", "--- Exiting chat.\n".cyan());
             break;
         }
-        
+
         // Create a message and attach it to the current thread
         let message_request = CreateMessageRequestArgs::default()
             .role("user")
@@ -233,30 +206,16 @@ async fn run_chat(
                     };
 
                     // Print the text
-                    println!("\n{}\n{}\n", "--- Response:".green(), text);
                 }
                 RunStatus::Failed => {
                     awaiting_response = false;
-                    println!("{} {:#?}", "--- Run Failed:".red(), run);
                 }
-                RunStatus::Queued => {
-                    println!("{}", "--- Run Queued".cyan());
-                }
-                RunStatus::Cancelling => {
-                    println!("{}", "--- Run Cancelling".cyan());
-                }
-                RunStatus::Cancelled => {
-                    println!("{}", "--- Run Cancelled".cyan());
-                }
-                RunStatus::Expired => {
-                    println!("{}", "--- Run Expired".cyan());
-                }
-                RunStatus::RequiresAction => {
-                    println!("{}", "--- Run Requires Action".cyan());
-                }
-                RunStatus::InProgress => {
-                    println!("{}", "--- Waiting for response...".cyan());
-                }
+                RunStatus::Queued => {}
+                RunStatus::Cancelling => {}
+                RunStatus::Cancelled => {}
+                RunStatus::Expired => {}
+                RunStatus::RequiresAction => {}
+                RunStatus::InProgress => {}
             }
             // Wait for 1 second before checking the status again
             std::thread::sleep(std::time::Duration::from_secs(1));
@@ -264,14 +223,4 @@ async fn run_chat(
     }
 
     Ok(())
-}
-
-fn display_help() {
-    println!("{}", "--- Commands:".cyan());
-    println!("\t{}\t{}", "build".blue(), "Create a new assistant.");
-    println!("\t{}\t{}", "list".blue(), "List all the created assistants.");
-    println!("\t{}\t{}", "chat".blue(), "Start a chat with the assistants.");
-    println!("\t{}\t{}", "help".blue(), "Display the available commands.");
-    println!("\t{}\t{}", "exit".blue(), "Exit the application.");
-    println!("");
 }
