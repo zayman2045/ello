@@ -1,9 +1,10 @@
 use actix_web::{post, web, Responder};
 
-use crate::{ClientState, threads::{create_thread::create_thread, run_thread::run_thread}};
+use crate::{ClientState, threads::run_thread::run_thread};
 
 #[derive(serde::Deserialize)]
 struct QueryElloRequest {
+    thread_id: String,
     message: String,
 }
 
@@ -16,9 +17,8 @@ async fn query_assistant(
 ) -> impl Responder {
     let assistant_id = path.into_inner();
     let message = req.message.clone();
+    let thread_id = req.thread_id.clone();
     let client = &data.client;
-
-    let thread_id = create_thread(client).await;
 
     let response = run_thread(client, assistant_id, thread_id, message).await.unwrap(); // TODO: Handle OpenAIError
 

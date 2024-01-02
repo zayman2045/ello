@@ -6,6 +6,7 @@ use assistants::{create_assistant::create_assistant, query_assistant::query_assi
 use dotenv::dotenv;
 
 use async_openai::{config::OpenAIConfig, Client};
+use threads::create_thread::create_thread;
 
 struct ClientState {
     client: Client<OpenAIConfig>,
@@ -25,6 +26,7 @@ pub async fn run() -> std::io::Result<()> {
             .service(create_assistant)
             .service(query_assistant)
             .service(list_assistants)
+            .service(create_thread)
     })
     .bind(("127.0.0.1", 8080))?
     .run()
