@@ -12,7 +12,7 @@ pub async fn run_thread(
     thread_id: String,
     message: String,
 ) -> Result<String, OpenAIError> {
-    // Create a query to limit the responses to 1 message
+    // Create a query with a limit of 1 message
     let query = [("limit", "1")];
 
     // Create a new message and attach it to the thread
