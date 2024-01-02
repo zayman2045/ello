@@ -1,6 +1,19 @@
-use actix_web::{get, web, Responder};
-
 use crate::ClientState;
+use actix_web::{get, web, HttpResponse, Responder};
+use serde::Serialize;
+
+#[derive(Serialize)]
+struct AssistantInfo {
+    id: String,
+    name: String,
+    instructions: String,
+    model: String,
+}
+
+#[derive(Serialize)]
+struct Assistants {
+    assistants: Vec<AssistantInfo>,
+}
 
 // List all assistants
 #[get("/assistants")]
@@ -10,25 +23,20 @@ async fn list_assistants(data: web::Data<ClientState>) -> impl Responder {
 
     let client = &data.client;
     let assistant_response = client.assistants().list(&query).await.unwrap(); // TODO: Handle OpenAIError
-    let assistants = assistant_response.data;
+    let assistant_objects = assistant_response.data;
 
-    // TODO: Serialize into JSON array
-    let assistants = assistants
+    let assistants = assistant_objects
         .iter()
         .map(|assistant| {
-            let assistant_id = assistant.id.clone();
-            let assistant_name = assistant.name.clone().unwrap_or("None".to_string());
-            let assistant_instructions =
-                assistant.instructions.clone().unwrap_or("None".to_string());
-            let assistant_model = assistant.model.clone();
-            let assistant = format!(
-                "{{\"id\": \"{}\", \"name\": \"{}\", \"instructions\": \"{}\", \"model\": \"{}\"}}",
-                assistant_id, assistant_name, assistant_instructions, assistant_model
-            );
-            assistant
+            let assistant_info = AssistantInfo {
+                id: assistant.id.clone(),
+                name: assistant.name.clone().unwrap_or("None".to_string()),
+                instructions: assistant.instructions.clone().unwrap_or("None".to_string()),
+                model: assistant.model.clone(),
+            };
+            assistant_info
         })
-        .collect::<Vec<String>>()
-        .join(",");
+        .collect::<Vec<AssistantInfo>>();
 
-    assistants
+    HttpResponse::Ok().json(Assistants { assistants })
 }
