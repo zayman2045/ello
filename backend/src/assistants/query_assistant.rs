@@ -1,10 +1,15 @@
-use actix_web::{post, web, Responder};
-
+use actix_web::{post, web, Responder, HttpResponse};
+use serde::{Deserialize, Serialize};
 use crate::{ClientState, threads::run_thread::run_thread};
 
-#[derive(serde::Deserialize)]
+#[derive(Deserialize)]
 struct QueryElloRequest {
     thread_id: String,
+    message: String,
+}
+
+#[derive(Serialize)]
+struct QueryElloResponse {
     message: String,
 }
 
@@ -16,11 +21,15 @@ async fn query_assistant(
     path: web::Path<String>,
 ) -> impl Responder {
     let assistant_id = path.into_inner();
-    let message = req.message.clone();
+    let request_message = req.message.clone();
     let thread_id = req.thread_id.clone();
     let client = &data.client;
 
-    let response = run_thread(client, assistant_id, thread_id, message).await.unwrap(); // TODO: Handle OpenAIError
+    let response_message = run_thread(client, assistant_id, thread_id, request_message).await.unwrap(); // TODO: Handle OpenAIError
 
-    response
+    let response = QueryElloResponse {
+        message: response_message,
+    };
+
+    HttpResponse::Ok().json(response)
 }
