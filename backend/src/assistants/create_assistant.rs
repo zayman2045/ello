@@ -1,14 +1,20 @@
 use crate::ClientState;
 use actix_web::{post, web, HttpResponse, Responder};
 use async_openai::types::CreateAssistantRequestArgs;
+use serde::{Deserialize, Serialize};
 
-#[derive(serde::Deserialize)]
+#[derive(Deserialize)]
 struct CreateElloRequest {
     name: String,
     instructions: String,
 }
 
-// Create an assistant from CreateElloRequest and respond with assistant id
+#[derive(Serialize)]
+struct CreateElloResponse {
+    assistant_id: String,
+}
+
+// Create an assistant from a CreateElloRequest and respond with its assistant id
 #[post("/assistants")]
 async fn create_assistant(
     req: web::Json<CreateElloRequest>,
@@ -28,5 +34,9 @@ async fn create_assistant(
         .await
         .unwrap(); // TODO: Handle OpenAIError
 
-    HttpResponse::Ok().body(format!("Assistant created with id {}", assistant.id))
+    let response = CreateElloResponse {
+        assistant_id: assistant.id,
+    };
+
+    HttpResponse::Ok().json(response)
 }

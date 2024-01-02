@@ -2,10 +2,12 @@ pub mod assistants;
 pub mod threads;
 
 use actix_web::{web, App, HttpServer};
-use assistants::{create_assistant::create_assistant, query_assistant::query_assistant, list_assistants::list_assistants};
-use dotenv::dotenv;
-
+use assistants::{
+    create_assistant::create_assistant, list_assistants::list_assistants,
+    query_assistant::query_assistant,
+};
 use async_openai::{config::OpenAIConfig, Client};
+use dotenv::dotenv;
 use threads::create_thread::create_thread;
 
 struct ClientState {
