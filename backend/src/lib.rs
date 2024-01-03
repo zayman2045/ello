@@ -4,7 +4,7 @@ pub mod threads;
 use actix_web::{web, App, HttpServer};
 use assistants::{
     create_assistant::create_assistant, list_assistants::list_assistants,
-    query_assistant::query_assistant,
+    query_assistant::query_assistant, delete_assistant::delete_assistant,
 };
 use async_openai::{config::OpenAIConfig, Client};
 use dotenv::dotenv;
@@ -28,6 +28,7 @@ pub async fn run() -> std::io::Result<()> {
             .service(create_assistant)
             .service(query_assistant)
             .service(list_assistants)
+            .service(delete_assistant)
             .service(create_thread)
     })
     .bind(("127.0.0.1", 8080))?
