@@ -1,13 +1,11 @@
 # Ello
 
-Ello is a full-stack web application that allows users to build and interact with their own AI assistants using the OpenAI API.
+Ello is a full-stack web application that uses the OpenAI API to allow users to customize and interact with their own AI assistants through a chat interface.
 
 ## Overview
 
-Ello's frontend is written in python by way of the Django framework. Django uses...
+The frontend of Ello is developed in Python, leveraging the Django framework for handling HTTP requests, manipulating and rendering HTML templates, and interfacing with the custom-built API layer.
 
-The backend of the app uses...
-
-Ello utilizes the async-openai crate for constructing requests and processing responses from OpenAI's Assistants API. User supplied "messages" are added to conversation "threads" that can be ran by assistants to generate an appropriate response.
+Ello's backend is constructed in Rust, utilizing the async-openai crate to formulate and dispatch requests to the OpenAI API using Rust data types. User-provided messages and other incoming JSON data are deserialized into structs, which are then employed to generate assistants, threads, and runs.
 
 ## Usage
