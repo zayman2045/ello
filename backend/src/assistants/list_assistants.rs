@@ -10,11 +10,6 @@ struct AssistantInfo {
     model: String,
 }
 
-#[derive(Serialize)]
-struct Assistants {
-    assistants: Vec<AssistantInfo>,
-}
-
 // List all assistants
 #[get("/assistants")]
 async fn list_assistants(data: web::Data<ClientState>) -> impl Responder {
@@ -38,5 +33,5 @@ async fn list_assistants(data: web::Data<ClientState>) -> impl Responder {
         })
         .collect::<Vec<AssistantInfo>>();
 
-    HttpResponse::Ok().json(Assistants { assistants })
+    HttpResponse::Ok().json(assistants)
 }
