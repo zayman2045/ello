@@ -8,7 +8,7 @@ use assistants::{
 };
 use async_openai::{config::OpenAIConfig, Client};
 use dotenv::dotenv;
-use threads::create_thread::create_thread;
+use threads::{create_thread::create_thread, list_messages::list_messages};
 
 struct ClientState {
     client: Client<OpenAIConfig>,
@@ -26,11 +26,12 @@ pub async fn run() -> std::io::Result<()> {
                 client: client.clone(),
             }))
             .service(create_assistant)
-            .service(query_assistant)
-            .service(list_assistants)
-            .service(delete_assistant)
             .service(create_thread)
+            .service(list_assistants)
             .service(update_assistant)
+            .service(query_assistant)
+            .service(delete_assistant)
+            .service(list_messages)
     })
     .bind(("127.0.0.1", 8080))?
     .run()
