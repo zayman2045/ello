@@ -15,12 +15,12 @@ struct QueryElloResponse {
     message: String,
 }
 
-// This function handler queries an assistant with a message and returns the assistant's response
+// This handler function queries an assistant with a message and returns the assistant's response
 #[post("/assistants/{assistant_id}")]
 async fn query_assistant(
-    req: web::Json<QueryElloRequest>,
-    data: web::Data<ClientState>,
-    path: web::Path<String>,
+    req: web::Json<QueryElloRequest>, // Request body
+    data: web::Data<ClientState>, // Shared state
+    path: web::Path<String>, // Path parameters
 ) -> impl Responder {
     // Extract the assistant_id from the path parameters
     let assistant_id = path.into_inner();

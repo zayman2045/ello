@@ -16,7 +16,7 @@ struct CreateElloResponse {
     assistant_id: String,
 }
 
-// This function handler creates an assistant and returns its id
+// This handler function creates an assistant and returns its id
 #[post("/assistants")]
 async fn create_assistant(
     req: web::Json<CreateElloRequest>, // Request body
