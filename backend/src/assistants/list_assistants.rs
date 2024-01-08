@@ -1,14 +1,6 @@
 use crate::ClientState;
 use actix_web::{get, web, HttpResponse, Responder};
-use serde::Serialize;
-
-#[derive(Serialize)]
-struct AssistantInfo {
-    id: String,
-    name: String,
-    instructions: String,
-    model: String,
-}
+use super::get_assistant::AssistantInfo;
 
 // List all assistants
 #[get("/assistants")]
