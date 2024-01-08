@@ -13,11 +13,18 @@
   <body>
     <nav>
       <h1>Ello</h1>
-      <a href="/build">+ New Assistant</a>
+      <ul>
+        <li>
+          {% for item in data %}
+          <a href="/assistant/{{ item.id }}">{{ item.name }}</a>
+          {% endfor %}
+          <a href="/build">+ New Assistant</a>
+        </li>
+      </ul>
     </nav>
     <div class="content">
       <div class="centered-container">
-        <p class="placeholder-content">Build a new assistant to get started</p>
+        <p class="placeholder-content">Select an assistant to get started</p>
       </div>
       <form class="message-form">
         <input
