@@ -26,11 +26,15 @@
       {% if assistant_info %}
       <div class="assistant-info">
         <h2>{{ assistant_info.name }}</h2>
-        <p>{{ assistant_info.instructions }}</p>
-        <p>{{ assistant_info.model }}</p>
+        <h3>{{ assistant_info.instructions }}</h3>
+        <div class="assistant-options">
+          <p>Powered by: {{ assistant_info.model }}</p>
+          <a href="/assistants/{{ assistant.id }}">Edit</a>
+          <a href="/assistants/{{ assistant.id }}">Delete</a>
+        </div>
       </div>
       <div class="centered-container">
-        <p class="placeholder-content"></p>
+        <p class="placeholder-content">MESSAGES GO HERE</p>
       </div>
       {% else %}
       <div class="centered-container">
