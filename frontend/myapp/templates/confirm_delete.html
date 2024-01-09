@@ -4,19 +4,17 @@
 <html>
   <head>
     <title>Ello</title>
-    <link
-      rel="stylesheet"
-      type="text/css"
-      href="{% static 'css/build.css' %}"
-    />
+    <link rel="stylesheet" type="text/css" href="{% static 'css/home.css' %}" />
   </head>
   <body>
     <div>
-      <h1>Confirm Delete</h1>
+      <h1>Confirm Deletion</h1>
       <p>Are you sure you want to delete {{ assistant_id }}?</p>
       <form method="post" action="{% url 'assistant_delete' assistant_id %}">
         {% csrf_token %}
-        <input type="submit" value="Delete">
+        <input type="submit" value="Yes" class="btn" />
+      </form>
+      <a href="/dashboard" class="btn">No</a>
     </div>
   </body>
 </html>

@@ -32,7 +32,7 @@ def assistant_delete(request, assistant_id):
 
         # Redirect to the dashboard
         return dashboard(request)
-
+    
 
 ## HELPER FUNCTIONS ##
 
