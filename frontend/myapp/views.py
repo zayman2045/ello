@@ -25,10 +25,22 @@ def assistant_dashboard(request, assistant_id):
 
 def assistant_delete(request, assistant_id):
     if request.method == 'GET':
-        return render(request, 'confirm_delete.html', {'assistant_id': assistant_id})
+        assistant_info = get_assistant(assistant_id)
+        return render(request, 'confirm_delete.html', {'assistant_info': assistant_info})
     elif request.method == 'POST':
         # Make a DELETE request to the specified URL
-        response = requests.delete('http://localhost:8080/assistants/' + assistant_id)
+        delete_response = delete_assistant(assistant_id)
+
+        # Redirect to the dashboard
+        return dashboard(request)
+    
+def assistant_edit(request, assistant_id):
+    if request.method == 'GET':
+        assistant_info = get_assistant(assistant_id)
+        return render(request, 'build.html', {'assistant_info': assistant_info})
+    elif request.method == 'POST':
+        # Make a PUT request to the specified URL
+        response = requests.put('http://localhost:8080/assistants/' + assistant_id, json=request.POST)
 
         # Redirect to the dashboard
         return dashboard(request)
@@ -55,3 +67,12 @@ def get_assistant(assistant_id):
     assistant_info = response.json()
 
     return assistant_info
+
+def delete_assistant(assistant_id):
+    # Make a DELETE request to the specified URL
+    response = requests.delete('http://localhost:8080/assistants/' + assistant_id)
+
+    # Parse the response as JSON
+    delete_response = response.json()
+
+    return delete_response

@@ -11,23 +11,32 @@
     />
   </head>
   <body>
-    <div>
-      <h1>Assistant Builder</h1>
+    <div class="center-vertical">
       <form class="build-form">
+        <input type="button" value="X" class="exit-btn" onclick="history.back()" />
+        {% csrf_token %} {% if assistant_info %}
+        <h1>Edit Assistant: {{ assistant_info.name }}</h1>
+        {% else %}
+        <h1>New Assistant Builder</h1>
+        {% endif %}
         <label for="assistant-name">Assistant name</label>
-        <input
-          type="text"
-          id="assistant-name"
-          class="assistant-name-input"
-          placeholder="Type a name..."
-        />
+        <input type="text" id="assistant-name" class="build-data" placeholder="Type a name..." />
         <label for="assistant-description">Assistant description</label>
         <textarea
-            id="assistant-description"
-            class="assistant-description-input"
-            placeholder="Type a description..."
+          id="assistant-description"
+          placeholder="Type a description..."
+          class="build-data"
         ></textarea>
-        <button type="submit" class="submit-button">Build</button>
+        <label for="assistant-model">Assistant model</label>
+        <select id="assistant-model" class="build-data">
+          <option value="gpt2">GPT-3</option>
+          <option value="gpt3">GPT-4</option>
+        </select>
+        {% if assistant_info %}
+        <input type="submit" value="Edit Assistant" class="btn" />
+        {% else %}
+        <input type="submit" value="Create Assistant" class="btn" />
+        {% endif %}
       </form>
     </div>
   </body>

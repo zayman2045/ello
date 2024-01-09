@@ -9,12 +9,15 @@
   <body>
     <div>
       <h1>Confirm Deletion</h1>
-      <p>Are you sure you want to delete {{ assistant_id }}?</p>
-      <form method="post" action="{% url 'assistant_delete' assistant_id %}">
+      <p>Are you sure you want to delete {{ assistant_info.name }}?</p>
+      <form
+        method="post"
+        action="{% url 'assistant_delete' assistant_info.id %}"
+      >
         {% csrf_token %}
-        <input type="submit" value="Yes" class="btn" />
+        <input type="submit" value="Delete" class="btn" />
       </form>
-      <a href="/dashboard" class="btn">No</a>
+      <a href="{% url 'dashboard' %}" class="btn">Cancel</a>
     </div>
   </body>
 </html>

@@ -133,7 +133,12 @@ nav ul {
   margin: 5px 10px;
 }
 
-.assistant-options a {
+.assistant-options form {
+  display: inline-block;
+
+}
+
+.btn {
   color: #1e1e1e;
   display: inline-block;
   margin: 5px 10px;
@@ -145,7 +150,7 @@ nav ul {
   transition: color 0.5s ease;
 }
 
-.assistant-options a:hover {
+.btn:hover {
   background-color: black;
   color: #50c878;
 }

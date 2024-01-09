@@ -10,27 +10,28 @@ body {
 h1 {
   color: #50c878;
   margin: 0 0 20px 0;
-  padding-top: 20px;
   text-align: center;
 }
 
 .build-form {
   max-width: 500px;
+  width: 80%;
   margin: 20px auto;
-  padding: 20px;
+  padding: 35px;
   background-color: #131212;
-  border-radius: 5px;
+  border-radius: 25px;
+  position: relative;
 }
 
-.build-form input,
-.build-form textarea {
-  width: calc(100% - 20px);
+.build-form .build-data {
+  width: 100%;
   margin: 10px 0;
   padding: 10px;
   border: none;
   border-radius: 3px;
   background-color: #333;
   color: #fff;
+  box-sizing: border-box;
 }
 
 .build-form label {
@@ -39,7 +40,7 @@ h1 {
   color: white;
 }
 
-.build-form .submit-button {
+form .btn {
   width: 100%;
   padding: 10px;
   border: none;
@@ -51,6 +52,28 @@ h1 {
   transition: background-color 0.5s ease;
 }
 
-.build-form .submit-button:hover {
+.btn:hover, .exit-btn:hover {
   background-color: orange;
+}
+
+.center-vertical {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: 100vh;
+}
+
+.exit-btn {
+  position: absolute;
+  top: -10px;
+  right: -10px;
+  padding: 10px 15px;
+  border: none;
+  border-radius: 100px;
+  background-color: #50c878;
+  color: #1e1e1e;
+  font-weight: bold;
+  font-size: 1.25rem;
+  cursor: pointer;
+  transition: background-color 0.5s ease;
 }

@@ -29,10 +29,17 @@
         <h3>{{ assistant_info.instructions }}</h3>
         <div class="assistant-options">
           <p>Powered by: {{ assistant_info.model }}</p>
-          <a href="/assistants/{{ assistant.id }}">Edit</a>
-          <form method="get" action="{% url 'assistant_delete' assistant_info.id %}">
-            {% csrf_token %}
-            <input type="submit" value="Delete">
+          <form
+            method="get"
+            action="{% url 'assistant_edit' assistant_info.id %}"
+          >
+            <input type="submit" value="Edit" class="btn" />
+          </form>
+          <form
+            method="get"
+            action="{% url 'assistant_delete' assistant_info.id %}"
+          >
+            <input type="submit" value="Delete" class="btn" />
           </form>
         </div>
       </div>
@@ -43,8 +50,7 @@
       <div class="centered-container">
         <p class="placeholder-content">Select an assistant to get started</p>
       </div>
-      {% endif %}
-      {% if not hide_form %}
+      {% endif %} {% if not hide_form %}
       <form class="message-form">
         <input
           type="text"
