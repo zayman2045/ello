@@ -11,7 +11,7 @@ def dashboard(request):
     assistant_list = get_assistant_list()
 
     # Pass the data to the template
-    return render(request, 'dashboard.html', {'assistant_list': assistant_list})
+    return render(request, 'dashboard.html', {'assistant_list': assistant_list, 'hide_form': True})
 
 def build(request):
     return render(request, 'build.html')
