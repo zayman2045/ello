@@ -30,7 +30,10 @@
         <div class="assistant-options">
           <p>Powered by: {{ assistant_info.model }}</p>
           <a href="/assistants/{{ assistant.id }}">Edit</a>
-          <a href="/assistants/{{ assistant.id }}">Delete</a>
+          <form method="get" action="{% url 'assistant_delete' assistant_info.id %}">
+            {% csrf_token %}
+            <input type="submit" value="Delete">
+          </form>
         </div>
       </div>
       <div class="centered-container">

@@ -23,6 +23,16 @@ def assistant_dashboard(request, assistant_id):
     # Pass the data to the template
     return render(request, 'dashboard.html', {'assistant_list': assistant_list, 'assistant_info': assistant_info})
 
+def assistant_delete(request, assistant_id):
+    if request.method == 'GET':
+        return render(request, 'confirm_delete.html', {'assistant_id': assistant_id})
+    elif request.method == 'POST':
+        # Make a DELETE request to the specified URL
+        response = requests.delete('http://localhost:8080/assistants/' + assistant_id)
+
+        # Redirect to the dashboard
+        return dashboard(request)
+
 
 ## HELPER FUNCTIONS ##
 
