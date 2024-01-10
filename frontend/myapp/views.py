@@ -13,15 +13,22 @@ def dashboard(request):
     # Pass the data to the template
     return render(request, 'dashboard.html', {'assistant_list': assistant_list, 'hide_form': True})
 
-def build(request):
-    return render(request, 'build.html')
-
 def assistant_dashboard(request, assistant_id):
     assistant_list = get_assistant_list()
     assistant_info = get_assistant(assistant_id)
 
     # Pass the data to the template
     return render(request, 'dashboard.html', {'assistant_list': assistant_list, 'assistant_info': assistant_info})
+
+def assistant_create(request):
+    if request.method == 'GET':
+        return render(request, 'build.html')
+    if request.method == 'POST':
+        # Make a POST request to the specified URL
+        # response = requests.post('http://localhost:8080/assistants', json=request.POST)
+
+        # Redirect to the dashboard
+        return dashboard(request)
 
 def assistant_delete(request, assistant_id):
     if request.method == 'GET':

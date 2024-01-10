@@ -12,7 +12,11 @@
   </head>
   <body>
     <div class="center-vertical">
-      <form class="build-form">
+      {% if assistant_info %}
+      <form class="build-form" method="post" action="{% url 'assistant_edit' assistant_info.id %}">
+      {% else %}
+        <form class="build-form" method="post" action="{% url 'assistant_create' %}">
+      {% endif %}
         <input type="button" value="X" class="exit-btn" onclick="history.back()" />
         {% csrf_token %} {% if assistant_info %}
         <h1>Edit Assistant: {{ assistant_info.name }}</h1>

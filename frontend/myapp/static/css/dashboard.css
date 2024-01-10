@@ -154,3 +154,10 @@ nav ul {
   background-color: black;
   color: #50c878;
 }
+
+.new-assistant {
+  background-color: #fff;
+  color: black;
+  transition: background-color 0.5s ease;
+  transition: color 0.5s ease;
+}

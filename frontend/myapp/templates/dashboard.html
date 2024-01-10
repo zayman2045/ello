@@ -15,10 +15,10 @@
       <h1><a href="{% url 'dashboard' %}">Ello</a></h1>
       <ul>
         <li>
+          <a href="{% url 'assistant_create' %}" class="new-assistant">+ New Assistant</a>
           {% for assistant in assistant_list %}
           <a href="/assistants/{{ assistant.id }}">{{ assistant.name }}</a>
           {% endfor %}
-          <a href="{% url 'build' %}">+ New Assistant</a>
         </li>
       </ul>
     </nav>
