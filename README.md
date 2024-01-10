@@ -10,4 +10,4 @@ Ello's backend is constructed in Rust, utilizing the Actix-web framework to esta
 
 ## Getting Started
 
-To run the project locally:
+### To run this project locally:
