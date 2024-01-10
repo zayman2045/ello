@@ -3,7 +3,6 @@ from django.shortcuts import render
 
 ## VIEWS ##
 
-
 def home(request):
     return render(request, 'home.html')
 
@@ -25,8 +24,8 @@ def assistant_create(request):
         return render(request, 'build.html')
     if request.method == 'POST':
         # Make a POST request to the specified URL
-        # response = requests.post('http://localhost:8080/assistants', json=request.POST)
-
+        response = requests.post('http://localhost:8080/assistants', json=request.POST)
+        
         # Redirect to the dashboard
         return dashboard(request)
 
@@ -47,7 +46,8 @@ def assistant_edit(request, assistant_id):
         return render(request, 'build.html', {'assistant_info': assistant_info})
     elif request.method == 'POST':
         # Make a PUT request to the specified URL
-        response = requests.put('http://localhost:8080/assistants/' + assistant_id, json=request.POST)
+        print(request.POST)
+        # response = requests.put('http://localhost:8080/assistants/' + assistant_id, json=request.POST)
 
         # Redirect to the dashboard
         return dashboard(request)

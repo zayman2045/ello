@@ -24,11 +24,12 @@
         <h1>New Assistant Builder</h1>
         {% endif %}
         <label for="assistant-name">Assistant name</label>
-        <input type="text" id="assistant-name" class="build-data" placeholder="Type a name..." />
-        <label for="assistant-description">Assistant description</label>
+        <input type="text" name="name" id="assistant-name" class="build-data" placeholder="Type a name..." />
+        <label for="assistant-instructions">Assistant instructions</label>
         <textarea
-          id="assistant-description"
-          placeholder="Type a description..."
+          name="instructions"
+          id="assistant-instructions"
+          placeholder="Type instructions for your assistant..."
           class="build-data"
         ></textarea>
         <label for="assistant-model">Assistant model</label>
