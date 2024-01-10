@@ -31,8 +31,7 @@ nav h1 a {
   text-decoration: none;
   background-color: #1e1e1e;
   border-radius: 5px;
-  transition: background-color 0.5s ease;
-  transition: color 0.5s ease;
+  transition: background-color 0.5s ease, color 0.5s ease;
   margin: 10px 0;
 }
 
@@ -76,7 +75,7 @@ nav h1 a {
   background-color: #50c878;
   color: black;
   border-radius: 5px;
-  transition: background-color 0.3s ease;
+  transition: background-color 0.5s ease, color 0.5s ease;
 }
 
 .submit-button:hover {
@@ -91,8 +90,7 @@ li a, .new-assistant {
   background-color: #1e1e1e;
   color: white;
   border-radius: 5px;
-  transition: background-color 0.5s ease;
-  transition: color 0.5s ease;
+  transition: background-color 0.5s ease, color 0.5s ease;
   margin: 10px 0;
 }
 
@@ -148,8 +146,7 @@ nav ul {
   background-color: #50c878;
   border-radius: 5px;
   padding: 5px 10px;
-  transition: background-color 0.5s ease;
-  transition: color 0.5s ease;
+  transition: background-color 0.5s ease, color 0.5s ease;
 }
 
 .btn:hover {
@@ -160,6 +157,10 @@ nav ul {
 .new-assistant {
   background-color: #fff;
   color: black;
-  transition: background-color 0.5s ease;
-  transition: color 0.5s ease;
+  transition: background-color 0.5s ease, color 0.5s ease;
+}
+
+.new-assistant:hover {
+  background-color: #50c878;
+  color: white;
 }
