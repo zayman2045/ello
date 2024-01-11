@@ -14,9 +14,22 @@ def dashboard(request):
 
 # Render the specified assistant's dashboard populated with the assistant's info
 def assistant_dashboard(request, assistant_id):
-    assistant_list = get_assistant_list()
-    assistant_info = get_assistant(assistant_id)
-    return render(request, 'dashboard.html', {'assistant_list': assistant_list, 'assistant_info': assistant_info})
+    if request.method == 'GET':
+        assistant_list = get_assistant_list()
+        assistant_info = get_assistant(assistant_id)
+        thread_id = create_thread()
+        print(thread_id['thread_id'])
+        return render(request, 'dashboard.html', {'assistant_list': assistant_list, 'assistant_info': assistant_info, 'thread_id': thread_id})
+    elif request.method == 'POST':
+        assistant_list = get_assistant_list()
+        assistant_info = get_assistant(assistant_id)
+        thread_id = request.POST['thread_id']
+        form_data = request.POST
+        messages = ['hello', 'world']
+        # messages = query_assistant(assistant_id, form_data) # TODO
+        print(messages)
+        return render(request, 'dashboard.html', {'assistant_list': assistant_list, 'assistant_info': assistant_info, 'thread_id': thread_id, 'messages': messages})
+
 
 # Render the assistant creation page and handle the creation of a new assistant
 def assistant_create(request):
@@ -93,3 +106,24 @@ def delete_assistant(assistant_id):
     # Parse the response as JSON and return the response
     delete_response = response.json()
     return delete_response
+
+# Requests the creation of a new thread from the backend
+def create_thread():
+    # Make a POST request to the specified URL
+    response = requests.post('http://localhost:8080/threads')
+
+    # Parse the response as JSON and return the response
+    thread_id = response.json()
+    return thread_id
+
+# TODO
+# # Requests query response from the backend
+# def query_assistant(assistant_id, form_data):
+#     # Make a POST request to the specified URL
+#     query_response = requests.post('http://localhost:8080/assistants/' + assistant_id, json=form_data)
+
+#     messages_response = requests.get('http://localhost:8080/threads/' + form_data['thread_id'])
+
+#     # Parse the response as JSON and return the response
+#     messages = messages_response.json()
+#     return messages

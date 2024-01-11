@@ -49,6 +49,18 @@ nav h1 a {
   align-items: center;
 }
 
+.message-container {
+  flex-grow: 1;
+  text-align: right;
+  flex-direction: column-reverse;
+  display: flex;
+  padding: 0 50px;
+}
+
+/* .message-content {
+  display: flex;
+} */
+
 .placeholder-content {
   margin: 0;
   padding: 0;

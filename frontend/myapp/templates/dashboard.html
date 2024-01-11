@@ -13,7 +13,9 @@
   <body>
     <nav>
       <h1><a href="{% url 'dashboard' %}">Ello</a></h1>
-      <a href="{% url 'assistant_create' %}" class="new-assistant">+ New Assistant</a>
+      <a href="{% url 'assistant_create' %}" class="new-assistant"
+        >+ New Assistant</a
+      >
       <ul>
         <li>
           {% for assistant in assistant_list %}
@@ -43,20 +45,38 @@
           </form>
         </div>
       </div>
+      {% endif %} 
+      {% if messages %} 
+      <div class="message-container">
+        {% for message in messages %}
+        <p class="message-content">{{ message }}</p>
+        {% endfor %} 
+      </div>
+      {% endif %} {% if not messages %}
+      {% if assistant_info %}
       <div class="centered-container">
         <p class="placeholder-content">MESSAGES GO HERE</p>
       </div>
-      {% else %}
+      {% endif %}
+      {% endif %} 
+      {% if not assistant_info %}
       <div class="centered-container">
         <p class="placeholder-content">Select an assistant to get started</p>
       </div>
       {% endif %} {% if not hide_form %}
-      <form class="message-form">
+      <form
+        class="message-form"
+        method="post"
+        action="{% url 'assistant_dashboard' assistant_info.id %}"
+      >
+        {% csrf_token %}
         <input
           type="text"
+          name="user_message"
           class="message-input"
           placeholder="Type a message..."
         />
+        <input type="hidden" name="thread_id" value="{{ thread_id }}" />
         <button type="submit" class="submit-button">Send</button>
       </form>
       {% endif %}
