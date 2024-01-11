@@ -16,19 +16,15 @@ def dashboard(request):
 def assistant_dashboard(request, assistant_id):
     if request.method == 'GET':
         assistant_list = get_assistant_list()
-        assistant_info = get_assistant(assistant_id)
+        assistant_info = get_assistant_info(assistant_id)
         thread_id = create_thread()
-        print(thread_id['thread_id'])
         return render(request, 'dashboard.html', {'assistant_list': assistant_list, 'assistant_info': assistant_info, 'thread_id': thread_id})
     elif request.method == 'POST':
         assistant_list = get_assistant_list()
-        assistant_info = get_assistant(assistant_id)
-        thread_id = request.POST['thread_id']
+        assistant_info = get_assistant_info(assistant_id)
         form_data = request.POST
-        messages = ['hello', 'world']
-        # messages = query_assistant(assistant_id, form_data) # TODO
-        print(messages)
-        return render(request, 'dashboard.html', {'assistant_list': assistant_list, 'assistant_info': assistant_info, 'thread_id': thread_id, 'messages': messages})
+        messages = query_assistant(assistant_id, form_data)
+        return render(request, 'dashboard.html', {'assistant_list': assistant_list, 'assistant_info': assistant_info, 'thread_id': request.POST['thread_id'], 'messages': messages})
 
 
 # Render the assistant creation page and handle the creation of a new assistant
@@ -43,7 +39,7 @@ def assistant_create(request):
 # Render the assistant deletion page and handle the deletion of an assistant
 def assistant_delete(request, assistant_id):
     if request.method == 'GET':
-        assistant_info = get_assistant(assistant_id)
+        assistant_info = get_assistant_info(assistant_id)
         return render(request, 'confirm_delete.html', {'assistant_info': assistant_info})
     elif request.method == 'POST':
         delete_response = delete_assistant(assistant_id)
@@ -52,7 +48,7 @@ def assistant_delete(request, assistant_id):
 # Render the assistant edit page and handle the editing of an assistant
 def assistant_edit(request, assistant_id):
     if request.method == 'GET':
-        assistant_info = get_assistant(assistant_id)
+        assistant_info = get_assistant_info(assistant_id)
         return render(request, 'build.html', {'assistant_info': assistant_info})
     elif request.method == 'POST':
         form_data = request.POST
@@ -72,7 +68,7 @@ def get_assistant_list():
     return assistant_list
 
 # Requests assistant info from the backend
-def get_assistant(assistant_id):
+def get_assistant_info(assistant_id):
     # Make a GET request to the specified URL
     response = requests.get('http://localhost:8080/assistants/' + assistant_id)
 
@@ -114,16 +110,20 @@ def create_thread():
 
     # Parse the response as JSON and return the response
     thread_id = response.json()
-    return thread_id
+    return thread_id.get('thread_id')
 
-# TODO
-# # Requests query response from the backend
-# def query_assistant(assistant_id, form_data):
-#     # Make a POST request to the specified URL
-#     query_response = requests.post('http://localhost:8080/assistants/' + assistant_id, json=form_data)
+# Requests query response from the backend
+def query_assistant(assistant_id, form_data):
+    print('query_assistant')
+    print(assistant_id)
+    print(form_data)
 
-#     messages_response = requests.get('http://localhost:8080/threads/' + form_data['thread_id'])
+    # Make a POST request to the specified URL
+    query_response = requests.post('http://localhost:8080/assistants/' + assistant_id, json=form_data)
 
-#     # Parse the response as JSON and return the response
-#     messages = messages_response.json()
-#     return messages
+    # Make a GET request to the specified URL
+    messages_response = requests.get('http://localhost:8080/threads/' + form_data['thread_id'])
+
+    # Parse the response as JSON and return the response
+    messages = messages_response.json()
+    return messages
