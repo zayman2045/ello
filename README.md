@@ -1,6 +1,6 @@
 # Ello
 
-Ello is a full-stack web application that uses the OpenAI API to allow users to customize and interact with their own AI assistants through a chat interface.
+Ello is a full-stack web application that leverages the OpenAI API, and provides users with an instant messenger-like interface, enabling them to customize and engage in chat conversations with their own AI friends.
 
 ## Overview
 
