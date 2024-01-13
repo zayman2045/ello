@@ -16,5 +16,5 @@ services:
       - "8080:8080"
     volumes:
       - ./backend:/usr/src/ello
-    environment:
-      - OPENAI_API_KEY=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
+    env_file:
+      - .env

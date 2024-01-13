@@ -14,7 +14,7 @@ COPY ./Cargo.toml ./Cargo.toml
 RUN cargo build --release
 
 # Start release stage
-FROM rust:1.74
+FROM rust:1.74-slim
 RUN apt-get update && apt-get install -y libssl-dev && rm -rf /var/lib/apt/lists/*
 
 # Copy the binary from the builder stage
