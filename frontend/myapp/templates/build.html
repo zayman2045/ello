@@ -19,28 +19,28 @@
       {% endif %}
         <input type="button" value="X" class="exit-btn" onclick="history.back()" />
         {% csrf_token %} {% if assistant_info %}
-        <h1>Edit Assistant: {{ assistant_info.name }}</h1>
+        <h1>Edit Friend: {{ assistant_info.name }}</h1>
         {% else %}
-        <h1>New Assistant Builder</h1>
+        <h1>New Friend Builder</h1>
         {% endif %}
-        <label for="assistant-name">Assistant name</label>
+        <label for="assistant-name">Name your friend:</label>
         <input type="text" name="name" id="assistant-name" class="build-data" placeholder="Type a name..." />
-        <label for="assistant-instructions">Assistant instructions</label>
+        <label for="assistant-instructions">Describe their personality:</label>
         <textarea
           name="instructions"
           id="assistant-instructions"
-          placeholder="Type instructions for your assistant..."
+          placeholder="Type a personality..."
           class="build-data"
         ></textarea>
-        <label for="assistant-model">Assistant model</label>
+        <label for="assistant-model">Pick an AI model:</label>
         <select id="assistant-model" class="build-data">
           <option value="gpt2">GPT-3</option>
           <option value="gpt3">GPT-4</option>
         </select>
         {% if assistant_info %}
-        <input type="submit" value="Edit Assistant" class="btn" />
+        <input type="submit" value="Edit Friend" class="btn" />
         {% else %}
-        <input type="submit" value="Create Assistant" class="btn" />
+        <input type="submit" value="Create Friend" class="btn" />
         {% endif %}
       </form>
     </div>

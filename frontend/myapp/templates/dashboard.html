@@ -14,12 +14,12 @@
     <nav>
       <h1><a href="{% url 'dashboard' %}">Ello</a></h1>
       <a href="{% url 'assistant_create' %}" class="new-assistant"
-        >+ New Assistant</a
+        >+ New Friend</a
       >
       <ul>
         <li>
           {% for assistant in assistant_list %}
-          <a href="/assistants/{{ assistant.id }}">{{ assistant.name }}</a>
+          <a href="{% url 'assistant_dashboard' assistant.id %}">{{ assistant.name }}</a>
           {% endfor %}
         </li>
       </ul>
@@ -61,7 +61,7 @@
       {% endif %} 
       {% if not assistant_info %}
       <div class="centered-container">
-        <p class="placeholder-content">Select an assistant to get started</p>
+        <p class="placeholder-content">Select a friend to get chatting</p>
       </div>
       {% endif %} {% if not hide_form %}
       <form
