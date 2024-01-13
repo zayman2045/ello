@@ -10,14 +10,6 @@
       href="{% static 'css/dashboard.css' %}"
     />
   </head>
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-  <script>
-    $(document).ready(function () {
-      $("#message-form").on("submit", function () {
-        $(this).find("#message-submit").prop("disabled", true);
-      });
-    });
-  </script>
   <body>
     <nav>
       <h1><a href="{% url 'dashboard' %}">Ello</a></h1>
@@ -97,5 +89,13 @@
       </form>
       {% endif %}
     </div>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script>
+      $(document).ready(function () {
+        $("#message-form").on("submit", function () {
+          $(this).find("#message-submit").prop("disabled", true);
+        });
+      });
+    </script>
   </body>
 </html>

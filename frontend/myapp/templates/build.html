@@ -13,9 +13,9 @@
   <body>
     <div class="center-vertical">
       {% if assistant_info %}
-      <form class="build-form" method="post" action="{% url 'assistant_edit' assistant_info.id %}">
+      <form id="build-form" class="build-form" method="post" action="{% url 'assistant_edit' assistant_info.id %}">
       {% else %}
-        <form class="build-form" method="post" action="{% url 'assistant_create' %}">
+        <form id="build-form" class="build-form" method="post" action="{% url 'assistant_create' %}">
       {% endif %}
         <input type="button" value="X" class="exit-btn" onclick="history.back()" />
         {% csrf_token %} {% if assistant_info %}
@@ -38,12 +38,16 @@
           <option value="gpt2">GPT-3</option>
           <option value="gpt3">GPT-4</option>
         </select>
-        {% if assistant_info %}
-        <input type="submit" value="Edit Friend" class="btn" />
-        {% else %}
-        <input type="submit" value="Create Friend" class="btn" />
-        {% endif %}
+        <input type="submit" value="{% if assistant_info %}Edit Friend{% else %}Create Friend{% endif %}" class="btn" id="build-submit"/>
       </form>
     </div>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script>
+      $(document).ready(function () {
+        $("#build-form").on("submit", function () {
+          $(this).find("#build-submit").prop("disabled", true);
+        });
+      });
+    </script>
   </body>
 </html>
