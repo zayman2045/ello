@@ -19,7 +19,9 @@
       <ul>
         <li>
           {% for assistant in assistant_list %}
-          <a href="{% url 'assistant_dashboard' assistant.id %}">{{ assistant.name }}</a>
+          <a href="{% url 'assistant_dashboard' assistant.id %}"
+            >{{ assistant.name }}</a
+          >
           {% endfor %}
         </li>
       </ul>
@@ -45,21 +47,23 @@
           </form>
         </div>
       </div>
-      {% endif %} 
-      {% if messages %} 
+      {% endif %} {% if messages %}
       <div class="message-container">
         {% for message in messages %}
-        <p class="message-content">{{ message }}</p>
-        {% endfor %} 
+        <p
+          class="message {% if message.role == 'user' %}user-message{% elif message.role == 'assistant' %}assistant-message{% endif %}"
+        >
+          {{ message.text }}
+        </p>
+        {% endfor %}
       </div>
-      {% endif %} {% if not messages %}
-      {% if assistant_info %}
+      {% endif %} {% if not messages %} {% if assistant_info %}
       <div class="centered-container">
-        <p class="placeholder-content">Send a message below to start a new chat</p>
+        <p class="placeholder-content">
+          Send a message below to start a new chat
+        </p>
       </div>
-      {% endif %}
-      {% endif %} 
-      {% if not assistant_info %}
+      {% endif %} {% endif %} {% if not assistant_info %}
       <div class="centered-container">
         <p class="placeholder-content">Select a friend to start chatting</p>
       </div>

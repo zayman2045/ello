@@ -40,6 +40,7 @@ nav h1 a {
   display: flex;
   flex-direction: column;
   text-align: center;
+  width: 100%;
 }
 
 .centered-container {
@@ -51,15 +52,36 @@ nav h1 a {
 
 .message-container {
   flex-grow: 1;
-  text-align: right;
   flex-direction: column-reverse;
   display: flex;
   padding: 0 50px;
+  overflow-y: auto;
+  width: 90%;
+  margin-left: auto;
+  margin-right: auto;
 }
 
-/* .message-content {
-  display: flex;
-} */
+.message {
+  text-align: left;
+  max-width: 70%;
+  padding: 10px 20px;
+  border-radius: 50px;
+  color: black;
+  font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif
+}
+
+.user-message {
+  margin-left: auto;
+  border: 1px solid #a56dff;
+  background-color: #a56dff;
+}
+
+.assistant-message {
+  margin-right: auto;
+  border: 1px solid #50c878;
+  background-color: #50c878;
+}
+
 
 .placeholder-content {
   margin: 0;
@@ -91,7 +113,7 @@ nav h1 a {
 }
 
 .submit-button:hover {
-  background-color: orange;
+  background-color: #a56dff;
 }
 
 li a, .new-assistant {
@@ -125,6 +147,9 @@ nav ul {
   margin: 20px;
   padding: 10px;
   border-radius: 5px;
+  width: 90%;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .assistant-info h2 {
