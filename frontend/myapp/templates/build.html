@@ -24,16 +24,17 @@
         <h1>New Friend Builder</h1>
         {% endif %}
         <label for="assistant-name">Name your friend:</label>
-        <input type="text" name="name" id="assistant-name" class="build-data" placeholder="Type a name..." />
+        <input type="text" name="name" id="assistant-name" class="build-data" placeholder="Type a name..." required />
         <label for="assistant-instructions">Describe their personality:</label>
         <textarea
           name="instructions"
           id="assistant-instructions"
           placeholder="Type a personality..."
           class="build-data"
+          required
         ></textarea>
         <label for="assistant-model">Pick an AI model:</label>
-        <select id="assistant-model" class="build-data">
+        <select id="assistant-model" class="build-data" required>
           <option value="gpt2">GPT-3</option>
           <option value="gpt3">GPT-4</option>
         </select>
