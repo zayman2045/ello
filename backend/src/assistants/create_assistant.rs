@@ -8,6 +8,7 @@ use serde::{Deserialize, Serialize};
 struct CreateElloRequest {
     name: String,
     instructions: String,
+    model: String,
 }
 
 // Define the structure of the response body after creating an assistant
@@ -20,13 +21,13 @@ struct CreateElloResponse {
 #[post("/assistants")]
 async fn create_assistant(
     req: web::Json<CreateElloRequest>, // Request body
-    data: web::Data<ClientState>, // Shared state
+    data: web::Data<ClientState>,      // Shared state
 ) -> impl Responder {
     // Construct the assistant creation request
     let assistant_request = CreateAssistantRequestArgs::default()
         .name(&req.name)
         .instructions(&req.instructions)
-        .model("gpt-3.5-turbo-1106")
+        .model(&req.model)
         .build()
         .unwrap(); // TODO: Handle OpenAIError
 

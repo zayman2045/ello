@@ -8,6 +8,7 @@ use serde::{Serialize, Deserialize};
 struct UpdateElloRequest {
     name: String,
     instructions: String,
+    model: String,
 }
 
 // Define the structure of the response body after updating an assistant
@@ -33,6 +34,7 @@ async fn update_assistant(
     let modify_request = ModifyAssistantRequestArgs::default()
         .name(&req.name)
         .instructions(&req.instructions)
+        .model(&req.model)
         .build()
         .unwrap(); // TODO: Handle OpenAIError
 

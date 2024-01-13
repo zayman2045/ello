@@ -33,17 +33,10 @@ def assistant_create(request):
         return render(request, 'build.html')
     if request.method == 'POST':
         form_data = request.POST
+        print(form_data)
         response = create_assistant(form_data)
         return dashboard(request)
 
-# Render the assistant deletion page and handle the deletion of an assistant
-def assistant_delete(request, assistant_id):
-    if request.method == 'GET':
-        assistant_info = get_assistant_info(assistant_id)
-        return render(request, 'confirm_delete.html', {'assistant_info': assistant_info})
-    elif request.method == 'POST':
-        delete_response = delete_assistant(assistant_id)
-        return dashboard(request)
 
 # Render the assistant edit page and handle the editing of an assistant
 def assistant_edit(request, assistant_id):
@@ -55,6 +48,14 @@ def assistant_edit(request, assistant_id):
         edit_response = edit_assistant(assistant_id, form_data)
         return dashboard(request)
     
+# Render the assistant deletion page and handle the deletion of an assistant
+def assistant_delete(request, assistant_id):
+    if request.method == 'GET':
+        assistant_info = get_assistant_info(assistant_id)
+        return render(request, 'confirm_delete.html', {'assistant_info': assistant_info})
+    elif request.method == 'POST':
+        delete_response = delete_assistant(assistant_id)
+        return dashboard(request)
     
 ## HELPER FUNCTIONS ##
 

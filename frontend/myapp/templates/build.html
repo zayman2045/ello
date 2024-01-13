@@ -34,9 +34,9 @@
           required
         ></textarea>
         <label for="assistant-model">Pick an AI model:</label>
-        <select id="assistant-model" class="build-data" required>
-          <option value="gpt2">GPT-3</option>
-          <option value="gpt3">GPT-4</option>
+        <select id="assistant-model" class="build-data" name="model" required>
+          <option value="gpt-3.5-turbo-1106">GPT-3</option>
+          <option value="gpt-4-1106-preview">GPT-4</option>
         </select>
         <input type="submit" value="{% if assistant_info %}Edit Friend{% else %}Create Friend{% endif %}" class="btn" id="build-submit"/>
       </form>
