@@ -11,13 +11,22 @@
       <h1>Confirm Deletion</h1>
       <p>Are you sure you want to delete {{ assistant_info.name }}?</p>
       <form
+        id="delete-form"
         method="post"
         action="{% url 'assistant_delete' assistant_info.id %}"
       >
         {% csrf_token %}
-        <input type="submit" value="Delete" class="btn" />
+        <input id="delete-submit" type="submit" value="Delete" class="btn" />
       </form>
       <a href="{% url 'dashboard' %}" class="btn">Cancel</a>
     </div>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script>
+      $(document).ready(function () {
+        $("#delete-form").on("submit", function () {
+          $(this).find("#delete-submit").prop("disabled", true);
+        });
+      });
+    </script>
   </body>
 </html>
