@@ -28,5 +28,5 @@ Once Docker and Docker Compose are installed, you can build and run the applicat
 docker-compose up --build
 ``` 
 
-The application will be available at http://0.0.0.0:8000.
+The application will be available at http://localhost:8000.
 
