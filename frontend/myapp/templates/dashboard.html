@@ -10,6 +10,14 @@
       href="{% static 'css/dashboard.css' %}"
     />
   </head>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script>
+    $(document).ready(function () {
+      $("#message-form").on("submit", function () {
+        $(this).find("#message-submit").prop("disabled", true);
+      });
+    });
+  </script>
   <body>
     <nav>
       <h1><a href="{% url 'dashboard' %}">Ello</a></h1>
@@ -69,6 +77,7 @@
       </div>
       {% endif %} {% if not hide_form %}
       <form
+        id="message-form"
         class="message-form"
         method="post"
         action="{% url 'assistant_dashboard' assistant_info.id %}"
@@ -79,9 +88,12 @@
           name="message"
           class="message-input"
           placeholder="Type a message..."
+          required
         />
         <input type="hidden" name="thread_id" value="{{ thread_id }}" />
-        <button type="submit" class="submit-button">Send</button>
+        <button type="submit" class="submit-button" id="message-submit">
+          Send
+        </button>
       </form>
       {% endif %}
     </div>
