@@ -37,7 +37,7 @@ pub async fn run() -> std::io::Result<()> {
             .service(create_thread)
             .service(list_messages)
     })
-    .bind(("127.0.0.1", 8080))?
+    .bind(("0.0.0.0", 8080))?
     .run()
     .await
 }

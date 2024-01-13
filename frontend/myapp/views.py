@@ -33,7 +33,6 @@ def assistant_create(request):
         return render(request, 'build.html')
     if request.method == 'POST':
         form_data = request.POST
-        print(form_data)
         response = create_assistant(form_data)
         return dashboard(request)
 
@@ -62,7 +61,7 @@ def assistant_delete(request, assistant_id):
 # Requests the list of assistants from the backend
 def get_assistant_list():
     # Make a GET request to the specified URL
-    response = requests.get('http://localhost:8080/assistants')
+    response = requests.get('http://backend:8080/assistants')
 
     # Parse the response as JSON and return the list of assistants
     assistant_list = response.json()
@@ -71,7 +70,7 @@ def get_assistant_list():
 # Requests assistant info from the backend
 def get_assistant_info(assistant_id):
     # Make a GET request to the specified URL
-    response = requests.get('http://localhost:8080/assistants/' + assistant_id)
+    response = requests.get('http://backend:8080/assistants/' + assistant_id)
 
     # Parse the response as JSON and return the assistant info
     assistant_info = response.json()
@@ -80,7 +79,7 @@ def get_assistant_info(assistant_id):
 # Requests the creation of a new assistant from the backend
 def create_assistant(form_data):
     # Make a POST request to the specified URL
-    response = requests.post('http://localhost:8080/assistants', json=form_data)
+    response = requests.post('http://backend:8080/assistants', json=form_data)
 
     # Parse the response as JSON and return the response
     create_response = response.json()
@@ -89,7 +88,7 @@ def create_assistant(form_data):
 # Requests the editing of an assistant from the backend
 def edit_assistant(assistant_id, form_data):
     # Make a PUT request to the specified URL
-    response = requests.put('http://localhost:8080/assistants/' + assistant_id, json=form_data)
+    response = requests.put('http://backend:8080/assistants/' + assistant_id, json=form_data)
 
     # Parse the response as JSON and return the response
     edit_response = response.json()
@@ -98,7 +97,7 @@ def edit_assistant(assistant_id, form_data):
 # Requests the deletion of an assistant from the backend
 def delete_assistant(assistant_id):
     # Make a DELETE request to the specified URL
-    response = requests.delete('http://localhost:8080/assistants/' + assistant_id)
+    response = requests.delete('http://backend:8080/assistants/' + assistant_id)
 
     # Parse the response as JSON and return the response
     delete_response = response.json()
@@ -107,7 +106,7 @@ def delete_assistant(assistant_id):
 # Requests the creation of a new thread from the backend
 def create_thread():
     # Make a POST request to the specified URL
-    response = requests.post('http://localhost:8080/threads')
+    response = requests.post('http://backend:8080/threads')
 
     # Parse the response as JSON and return the response
     thread_id = response.json()
@@ -115,15 +114,11 @@ def create_thread():
 
 # Requests query response from the backend
 def query_assistant(assistant_id, form_data):
-    print('query_assistant')
-    print(assistant_id)
-    print(form_data)
-
     # Make a POST request to the specified URL
-    query_response = requests.post('http://localhost:8080/assistants/' + assistant_id, json=form_data)
+    query_response = requests.post('http://backend:8080/assistants/' + assistant_id, json=form_data)
 
     # Make a GET request to the specified URL
-    messages_response = requests.get('http://localhost:8080/threads/' + form_data['thread_id'])
+    messages_response = requests.get('http://backend:8080/threads/' + form_data['thread_id'])
 
     # Parse the response as JSON and return the response
     messages = messages_response.json()
