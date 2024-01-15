@@ -1,4 +1,4 @@
-//! Modules for thread operations.
+//! Handlers and helpers for the threads routes.
 
 pub mod create_thread;
 pub mod run_thread;

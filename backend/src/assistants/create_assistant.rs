@@ -1,25 +1,27 @@
+//! Handles the creation of a new assistant.
+
 use crate::ClientState;
 use actix_web::{post, web, HttpResponse, Responder};
 use async_openai::types::CreateAssistantRequestArgs;
 use serde::{Deserialize, Serialize};
 
-// Define the structure of the request body for creating an assistant
+/// Request body for creating an assistant.
 #[derive(Deserialize)]
-struct CreateElloRequest {
-    name: String,
-    instructions: String,
-    model: String,
+pub struct CreateElloRequest {
+    pub name: String,
+    pub instructions: String,
+    pub model: String,
 }
 
-// Define the structure of the response body after creating an assistant
+/// Response body after creating an assistant.
 #[derive(Serialize)]
-struct CreateElloResponse {
-    assistant_id: String,
+pub struct CreateElloResponse {
+    pub assistant_id: String,
 }
 
-// This handler function creates an assistant and returns its id
+/// Creates a new assistant and returns its id.
 #[post("/assistants")]
-async fn create_assistant(
+pub async fn create_assistant(
     req: web::Json<CreateElloRequest>, // Request body
     data: web::Data<ClientState>,      // Shared state
 ) -> impl Responder {

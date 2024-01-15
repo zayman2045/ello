@@ -1,23 +1,26 @@
+//! Handles the querying of an assistant.
+
 use actix_web::{post, web, Responder, HttpResponse};
 use serde::{Deserialize, Serialize};
 use crate::{ClientState, threads::run_thread::run_thread};
 
-// Define the structure of the request body for querying an assistant
+
+/// Request body for querying an assistant.
 #[derive(Deserialize)]
-struct QueryElloRequest {
-    thread_id: String,
-    message: String,
+pub struct QueryElloRequest {
+    pub thread_id: String,
+    pub message: String,
 }
 
-// Define the structure of the response body after querying an assistant
+/// Response body after querying an assistant.
 #[derive(Serialize)]
-struct QueryElloResponse {
-    message: String,
+pub struct QueryElloResponse {
+    pub message: String,
 }
 
-// This handler function queries an assistant with a message and returns the assistant's response
+/// Queries an assistant and returns its response message and thread_id.
 #[post("/assistants/{assistant_id}")]
-async fn query_assistant(
+pub async fn query_assistant(
     req: web::Json<QueryElloRequest>, // Request body
     data: web::Data<ClientState>, // Shared state
     path: web::Path<String>, // Path parameters

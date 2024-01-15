@@ -1,3 +1,5 @@
+//! Handlers and helpers for the assistants routes.
+
 pub mod create_assistant;
 pub mod delete_assistant;
 pub mod get_assistant;

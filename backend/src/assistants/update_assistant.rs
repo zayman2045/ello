@@ -1,25 +1,27 @@
+//! Handles the editing of an assistant.
+
 use crate::ClientState;
 use actix_web::{put, web, HttpResponse, Responder};
 use async_openai::types::ModifyAssistantRequestArgs;
 use serde::{Serialize, Deserialize};
 
-// Define the structure of the request body for updating an assistant
+/// Request body for editing an assistant.
 #[derive(Deserialize)]
-struct UpdateElloRequest {
-    name: String,
-    instructions: String,
-    model: String,
+pub struct UpdateElloRequest {
+    pub name: String,
+    pub instructions: String,
+    pub model: String,
 }
 
-// Define the structure of the response body after updating an assistant
+/// Response body after editing an assistant.
 #[derive(Serialize)]
-struct UpdateElloResponse {
-    assistant_id: String,
+pub struct UpdateElloResponse {
+    pub assistant_id: String,
 }
 
-// This handler function updates an assistant and returns its id
+/// Edits an existing assistant and returns its id.
 #[put("/assistants/{assistant_id}")]
-async fn update_assistant(
+pub async fn update_assistant(
     req: web::Json<UpdateElloRequest>, // Request body
     data: web::Data<ClientState>, // Shared state
     path: web::Path<String>, // Path parameters

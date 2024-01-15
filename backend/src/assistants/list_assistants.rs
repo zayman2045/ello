@@ -1,10 +1,12 @@
+//! Handles the listing of all assistants.
+
 use crate::ClientState;
 use actix_web::{get, web, HttpResponse, Responder};
 use super::get_assistant::AssistantInfo;
 
-// This handler function lists all assistants
+/// Lists all assistants.
 #[get("/assistants")]
-async fn list_assistants(
+pub async fn list_assistants(
     data: web::Data<ClientState> // Shared state
 ) -> impl Responder {
     // Create a query with a limit of 20 assistants

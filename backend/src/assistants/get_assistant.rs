@@ -1,8 +1,10 @@
+//! Handles the retrieval of an assistant.
+
 use actix_web::{get, web, HttpResponse, Responder};
 use crate::ClientState;
 use serde::Serialize;
 
-// Define the structure of the response body for getting an assistant
+/// Response body after retrieving an assistant.
 #[derive(Serialize)]
 pub struct AssistantInfo {
     pub id: String,
@@ -11,9 +13,9 @@ pub struct AssistantInfo {
     pub model: String,
 }
 
-// This handler function retrieves a specific assistant
+/// Retrieves an assistant and returns its info.
 #[get("assistants/{assistant_id}")]
-async fn get_assistant(
+pub async fn get_assistant(
     data: web::Data<ClientState>, // Shared state
     path: web::Path<String>, // Path parameters
 ) -> impl Responder {

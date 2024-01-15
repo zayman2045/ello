@@ -7,9 +7,9 @@ use crate::ClientState;
 
 /// Response body structure for listing messages.
 #[derive(Serialize)]
-struct MessageInfo {
-    role: String,
-    text: String,
+pub struct MessageInfo {
+    pub role: String,
+    pub text: String,
 }
 
 /// Lists all messages in a specific thread.

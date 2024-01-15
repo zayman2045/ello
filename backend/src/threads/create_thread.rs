@@ -7,8 +7,8 @@ use crate::ClientState;
 
 /// Response body structure for creating a thread.
 #[derive(Serialize)]
-struct CreateThreadResponse {
-    thread_id: String,
+pub struct CreateThreadResponse {
+    pub thread_id: String,
 }
 
 /// Creates a new thread and returns the thread id.
