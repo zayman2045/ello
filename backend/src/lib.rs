@@ -1,3 +1,5 @@
+//! Main server functionality for the application.
+
 pub mod assistants;
 pub mod threads;
 
@@ -10,24 +12,21 @@ use async_openai::{config::OpenAIConfig, Client};
 use dotenv::dotenv;
 use threads::{create_thread::create_thread, list_messages::list_messages};
 
-// Define the shared state for the client
+/// Shared client state.
 struct ClientState {
     client: Client<OpenAIConfig>,
 }
 
+/// Starts the HTTP server and shares the client state with all handlers.
 pub async fn run() -> std::io::Result<()> {
-    // Create a client from the OPENAI_API_KEY environment variable in the .env file
     dotenv().ok();
     let client = Client::new();
 
-    // Run HTTP server
     HttpServer::new(move || {
         App::new()
-            // Share the client state with all handlers
             .app_data(web::Data::new(ClientState {
                 client: client.clone(),
             }))
-            // Register all handlers
             .service(create_assistant)
             .service(get_assistant)
             .service(list_assistants)

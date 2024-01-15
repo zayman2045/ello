@@ -1,3 +1,5 @@
+//! Handles the execution of a thread using an assistant.
+
 use async_openai::{
     config::OpenAIConfig,
     error::OpenAIError,
@@ -5,7 +7,7 @@ use async_openai::{
     Client,
 };
 
-// Run a thread using an assistant and a message, and return the response
+/// Executes a thread using an assistant and a message, and returns the response.
 pub async fn run_thread(
     client: &Client<OpenAIConfig>,
     assistant_id: String,

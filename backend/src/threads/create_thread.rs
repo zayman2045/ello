@@ -1,15 +1,17 @@
+//! Handles the creation of a new thread.
+
 use actix_web::{post, web, Responder, HttpResponse};
 use async_openai::types::CreateThreadRequestArgs;
 use serde::Serialize;
 use crate::ClientState;
 
-// Define the structure of the response body for creating a thread
+/// Response body structure for creating a thread.
 #[derive(Serialize)]
 struct CreateThreadResponse {
     thread_id: String,
 }
 
-// This handler function creates a new thread and returns the thread id
+/// Creates a new thread and returns the thread id.
 #[post("/threads")]
 pub async fn create_thread(
     data: web::Data<ClientState> // Shared state

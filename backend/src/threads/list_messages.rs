@@ -1,16 +1,18 @@
+//! Handles the listing of messages in a thread.
+
 use actix_web::{get, web, Responder, HttpResponse};
 use async_openai::types::{MessageRole, MessageContent};
 use serde::Serialize;
 use crate::ClientState;
 
-// Define the structure of the response body for listing messages
+/// Response body structure for listing messages.
 #[derive(Serialize)]
 struct MessageInfo {
     role: String,
     text: String,
 }
 
-// This handler function lists all messages in a specific thread
+/// Lists all messages in a specific thread.
 #[get("/threads/{thread_id}")]
 pub async fn list_messages(
     data: web::Data<ClientState>, // Shared state
