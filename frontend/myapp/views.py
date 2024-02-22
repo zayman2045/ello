@@ -72,44 +72,58 @@ def assistant_delete(request, assistant_id):
     
 ## HELPER FUNCTIONS ##
 
-# Requests the list of assistants from the backend
 def get_assistant_list():
+    """
+    Requests the list of assistants from the backend.
+    """
     response = requests.get('http://backend:8080/assistants')
     assistant_list = response.json()
     return assistant_list
 
-# Requests assistant info from the backend
 def get_assistant_info(assistant_id):
+    """
+    Requests assistant info from the backend.
+    """
     response = requests.get('http://backend:8080/assistants/' + assistant_id)
     assistant_info = response.json()
     return assistant_info
 
-# Requests the creation of a new assistant from the backend
 def create_assistant(form_data):
+    """
+    Requests the creation of a new assistant from the backend.
+    """
     response = requests.post('http://backend:8080/assistants', json=form_data)
     create_response = response.json()
     return create_response
 
-# Requests the editing of an assistant from the backend
 def edit_assistant(assistant_id, form_data):
+    """
+    Requests the editing of an assistant from the backend.
+    """
     response = requests.put('http://backend:8080/assistants/' + assistant_id, json=form_data)
     edit_response = response.json()
     return edit_response
 
-# Requests the deletion of an assistant from the backend
 def delete_assistant(assistant_id):
+    """
+    Requests the deletion of an assistant from the backend.
+    """
     response = requests.delete('http://backend:8080/assistants/' + assistant_id)
     delete_response = response.json()
     return delete_response
 
-# Requests the creation of a new thread from the backend
 def create_thread():
+    """
+    Requests the creation of a new thread from the backend.
+    """
     response = requests.post('http://backend:8080/threads')
     thread_id = response.json()
     return thread_id.get('thread_id')
 
-# Requests query response from the backend
 def query_assistant(assistant_id, form_data):
+    """
+    Requests query response from the backend.
+    """
     query_response = requests.post('http://backend:8080/assistants/' + assistant_id, json=form_data)
     messages_response = requests.get('http://backend:8080/threads/' + form_data['thread_id'])
     messages = messages_response.json()
