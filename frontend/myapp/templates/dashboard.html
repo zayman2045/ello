@@ -91,11 +91,16 @@
     </div>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script>
+      // Disable the submit button to prevent multiple submissions
       $(document).ready(function () {
         $("#message-form").on("submit", function () {
-          $(this).find("#message-submit").prop("disabled", true);
+          var submitButton = $(this).find("#message-submit");
+          submitButton.prop("disabled", true);
+          submitButton.css("background-color", "#cccccc");
+          submitButton.text("Sending...");
         });
       });
     </script>
+      
   </body>
 </html>
