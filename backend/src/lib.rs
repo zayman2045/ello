@@ -2,6 +2,7 @@
 
 pub mod assistants;
 pub mod threads;
+pub mod errors;
 
 use actix_web::{web, App, HttpServer};
 use assistants::{

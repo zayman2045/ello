@@ -1,7 +1,7 @@
 //! Handles the creation of a new assistant.
 
-use crate::ClientState;
-use actix_web::{post, web, HttpResponse, Responder};
+use crate::{errors::ElloError, ClientState};
+use actix_web::{post, web, HttpResponse};
 use async_openai::types::CreateAssistantRequestArgs;
 use serde::{Deserialize, Serialize};
 
@@ -24,14 +24,13 @@ pub struct CreateElloResponse {
 pub async fn create_assistant(
     req: web::Json<CreateElloRequest>,
     data: web::Data<ClientState>,
-) -> impl Responder {
+) -> Result<HttpResponse, ElloError> {
     // Construct the assistant creation request
     let assistant_request = CreateAssistantRequestArgs::default()
         .name(&req.name)
         .instructions(&req.instructions)
         .model(&req.model)
-        .build()
-        .unwrap();
+        .build().map_err(ElloError::from)?;
 
     // Send the assistant creation request and get the response
     let assistant = data
@@ -39,7 +38,7 @@ pub async fn create_assistant(
         .assistants()
         .create(assistant_request)
         .await
-        .unwrap();
+        .map_err(ElloError::from)?;
 
     // Construct the response body
     let response = CreateElloResponse {
@@ -47,5 +46,5 @@ pub async fn create_assistant(
     };
 
     // Return the response as JSON
-    HttpResponse::Ok().json(response)
+    Ok(HttpResponse::Ok().json(response))
 }
