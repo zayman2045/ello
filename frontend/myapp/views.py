@@ -18,7 +18,8 @@ def dashboard(request):
 
 def assistant_dashboard(request, assistant_id):
     """
-    Render the specified assistant's dashboard populated with the assistant's info.
+    Render the specified assistant's dashboard populated with the assistant's info on GET requests.
+    Query the assistant with the user's input and display the assistant's response on POST request.
     """
     if request.method == 'GET':
         assistant_list = get_assistant_list()
@@ -34,7 +35,8 @@ def assistant_dashboard(request, assistant_id):
 
 def assistant_create(request):
     """
-    Render the assistant creation page and handle the creation of a new assistant.
+    Render the assistant creation page on GET requests.
+    Create a new assistant on POST requests.
     """
     if request.method == 'GET':
         return render(request, 'build.html')
@@ -45,7 +47,8 @@ def assistant_create(request):
 
 def assistant_edit(request, assistant_id):
     """
-    Render the assistant edit page and handle the editing of an assistant.
+    Render the assistant edit page on GET requests.
+    Edit the assistant on POST requests.
     """
     if request.method == 'GET':
         assistant_info = get_assistant_info(assistant_id)
@@ -57,7 +60,8 @@ def assistant_edit(request, assistant_id):
 
 def assistant_delete(request, assistant_id):
     """
-    Render the assistant deletion page and handle the deletion of an assistant.
+    Render the assistant deletion page on GET requests.
+    Delete the assistant on POST requests.
     """
     if request.method == 'GET':
         assistant_info = get_assistant_info(assistant_id)
@@ -70,66 +74,43 @@ def assistant_delete(request, assistant_id):
 
 # Requests the list of assistants from the backend
 def get_assistant_list():
-    # Make a GET request to the specified URL
     response = requests.get('http://backend:8080/assistants')
-
-    # Parse the response as JSON and return the list of assistants
     assistant_list = response.json()
     return assistant_list
 
 # Requests assistant info from the backend
 def get_assistant_info(assistant_id):
-    # Make a GET request to the specified URL
     response = requests.get('http://backend:8080/assistants/' + assistant_id)
-
-    # Parse the response as JSON and return the assistant info
     assistant_info = response.json()
     return assistant_info
 
 # Requests the creation of a new assistant from the backend
 def create_assistant(form_data):
-    # Make a POST request to the specified URL
     response = requests.post('http://backend:8080/assistants', json=form_data)
-
-    # Parse the response as JSON and return the response
     create_response = response.json()
     return create_response
 
 # Requests the editing of an assistant from the backend
 def edit_assistant(assistant_id, form_data):
-    # Make a PUT request to the specified URL
     response = requests.put('http://backend:8080/assistants/' + assistant_id, json=form_data)
-
-    # Parse the response as JSON and return the response
     edit_response = response.json()
     return edit_response
 
 # Requests the deletion of an assistant from the backend
 def delete_assistant(assistant_id):
-    # Make a DELETE request to the specified URL
     response = requests.delete('http://backend:8080/assistants/' + assistant_id)
-
-    # Parse the response as JSON and return the response
     delete_response = response.json()
     return delete_response
 
 # Requests the creation of a new thread from the backend
 def create_thread():
-    # Make a POST request to the specified URL
     response = requests.post('http://backend:8080/threads')
-
-    # Parse the response as JSON and return the response
     thread_id = response.json()
     return thread_id.get('thread_id')
 
 # Requests query response from the backend
 def query_assistant(assistant_id, form_data):
-    # Make a POST request to the specified URL
     query_response = requests.post('http://backend:8080/assistants/' + assistant_id, json=form_data)
-
-    # Make a GET request to the specified URL
     messages_response = requests.get('http://backend:8080/threads/' + form_data['thread_id'])
-
-    # Parse the response as JSON and return the response
     messages = messages_response.json()
     return messages
