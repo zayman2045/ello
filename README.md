@@ -18,7 +18,7 @@ Before running the application, you need to set up your OpenAI API key. Create a
 OPENAI_API_KEY=your_openai_api_key
 ```
 
-Replace your_openai_api_key with your actual OpenAI API key. This key is used by the backend service to authenticate with the OpenAI API. If you do not have an OpenAI API key, you can create one [here] (https://platform.openai.com/api-keys).
+Replace your_openai_api_key with your actual OpenAI API key. This key is used by the backend service to authenticate with the OpenAI API. If you do not have an OpenAI API key, you can create one [here](https://platform.openai.com/api-keys).
 
 Make sure you have Docker and Docker Compose installed. If not, you can download and install Docker from [here](https://docs.docker.com/get-docker/) and Docker Compose from [here](https://docs.docker.com/compose/install/).
 
