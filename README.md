@@ -8,6 +8,8 @@ The frontend is developed in Python, leveraging the Django framework for handlin
 
 Ello's backend is constructed in Rust, utilizing the Actix-web framework to establish the web service and the async-openai crate to formulate and dispatch requests to the OpenAI API using Rust data types. An OpenAI API key is used to generate a client for handling API calls, and is shared amongst all HTTP services within the specified scope. User-provided messages and other incoming JSON data are deserialized into structs, which are then employed to generate, update and delete individual assistants, threads, and runs. 
 
+To handle errors, a custom `ElloError` type was built to handle conversions between `OpenAIError` types and the `Error` used by Actix Web. The `thiserror` crate was used to reduce boilerplate implementation and makes error handling easier to maintain as additional features are added.
+
 ## Getting Started
 
 ### To run this project locally:
