@@ -1,7 +1,7 @@
 //! Handles the retrieval of an assistant.
 
-use crate::ClientState;
-use actix_web::{get, web, HttpResponse, Responder};
+use crate::{errors::ElloError, ClientState};
+use actix_web::{get, web, HttpResponse};
 use serde::Serialize;
 
 /// Response body after retrieving an assistant.
@@ -18,7 +18,7 @@ pub struct AssistantInfo {
 pub async fn get_assistant(
     data: web::Data<ClientState>, 
     path: web::Path<String>,      
-) -> impl Responder {
+) -> Result<HttpResponse, ElloError> {
     // Extract the assistant_id from the path parameters
     let assistant_id = path.into_inner();
 
@@ -26,7 +26,7 @@ pub async fn get_assistant(
     let client = &data.client;
 
     // Send the assistant retrieval request and get the response
-    let assistant_response = client.assistants().retrieve(&assistant_id).await.unwrap();
+    let assistant_response = client.assistants().retrieve(&assistant_id).await.map_err(ElloError::from)?;
 
     // Construct the response body
     let assistant_info = AssistantInfo {
@@ -43,5 +43,5 @@ pub async fn get_assistant(
     };
 
     // Return the response as JSON
-    HttpResponse::Ok().json(assistant_info)
+    Ok(HttpResponse::Ok().json(assistant_info))
 }

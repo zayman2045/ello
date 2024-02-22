@@ -1,7 +1,7 @@
 //! Handles the creation of a new thread.
 
-use crate::ClientState;
-use actix_web::{post, web, HttpResponse, Responder};
+use crate::{errors::ElloError, ClientState};
+use actix_web::{post, web, HttpResponse};
 use async_openai::types::CreateThreadRequestArgs;
 use serde::Serialize;
 
@@ -14,9 +14,9 @@ pub struct CreateThreadResponse {
 /// Creates a new thread and returns the thread id.
 #[post("/threads")]
 pub async fn create_thread(data: web::Data<ClientState>,
-) -> impl Responder {
+) -> Result<HttpResponse, ElloError> {
     // Create a default thread request
-    let thread_request = CreateThreadRequestArgs::default().build().unwrap();
+    let thread_request = CreateThreadRequestArgs::default().build().map_err(ElloError::from)?;
 
     // Get a reference to the client from the shared state
     let client = &data.client;
@@ -26,7 +26,7 @@ pub async fn create_thread(data: web::Data<ClientState>,
         .threads()
         .create(thread_request.clone())
         .await
-        .unwrap();
+        .map_err(ElloError::from)?;
 
     // Construct the response body
     let response = CreateThreadResponse {
@@ -34,5 +34,5 @@ pub async fn create_thread(data: web::Data<ClientState>,
     };
 
     // Return the response as JSON
-    HttpResponse::Ok().json(response)
+    Ok(HttpResponse::Ok().json(response))
 }

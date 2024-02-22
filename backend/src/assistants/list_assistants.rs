@@ -1,13 +1,12 @@
 //! Handles the listing of all assistants.
 
 use super::get_assistant::AssistantInfo;
-use crate::ClientState;
-use actix_web::{get, web, HttpResponse, Responder};
+use crate::{errors::ElloError, ClientState};
+use actix_web::{get, web, HttpResponse};
 
 /// Lists all assistants.
 #[get("/assistants")]
-pub async fn list_assistants(data: web::Data<ClientState>, 
-) -> impl Responder {
+pub async fn list_assistants(data: web::Data<ClientState>) -> Result<HttpResponse, ElloError> {
     // Create a query with a limit of 20 assistants
     let query = [("limit", "20")];
 
@@ -15,7 +14,7 @@ pub async fn list_assistants(data: web::Data<ClientState>,
     let client = &data.client;
 
     // Send the assistant list request and get the response
-    let assistant_response = client.assistants().list(&query).await.unwrap();
+    let assistant_response = client.assistants().list(&query).await.map_err(ElloError::from)?;
 
     // Extract the assistant objects from the response
     let assistant_objects = assistant_response.data;
@@ -36,5 +35,5 @@ pub async fn list_assistants(data: web::Data<ClientState>,
         .collect::<Vec<AssistantInfo>>(); 
 
     // Return the assistants as JSON
-    HttpResponse::Ok().json(assistants)
+    Ok(HttpResponse::Ok().json(assistants))
 }

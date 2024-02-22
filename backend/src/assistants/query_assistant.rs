@@ -1,7 +1,7 @@
 //! Handles the querying of an assistant.
 
-use crate::{threads::run_thread::run_thread, ClientState};
-use actix_web::{post, web, HttpResponse, Responder};
+use crate::{errors::ElloError, threads::run_thread::run_thread, ClientState};
+use actix_web::{post, web, HttpResponse};
 use serde::{Deserialize, Serialize};
 
 /// Request body for querying an assistant.
@@ -23,7 +23,7 @@ pub async fn query_assistant(
     req: web::Json<QueryElloRequest>,
     data: web::Data<ClientState>,
     path: web::Path<String>,
-) -> impl Responder {
+) -> Result<HttpResponse, ElloError> {
     // Extract the assistant_id from the path parameters
     let assistant_id = path.into_inner();
 
@@ -37,7 +37,7 @@ pub async fn query_assistant(
     // Run the thread and get the response message
     let response_message = run_thread(client, assistant_id, thread_id, request_message)
         .await
-        .unwrap();
+        .map_err(ElloError::from)?;
 
     // Construct the response body
     let response = QueryElloResponse {
@@ -45,5 +45,5 @@ pub async fn query_assistant(
     };
 
     // Return the response as JSON
-    HttpResponse::Ok().json(response)
+    Ok(HttpResponse::Ok().json(response))
 }

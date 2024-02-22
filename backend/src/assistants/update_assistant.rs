@@ -1,7 +1,7 @@
 //! Handles the editing of an assistant.
 
-use crate::ClientState;
-use actix_web::{put, web, HttpResponse, Responder};
+use crate::{errors::ElloError, ClientState};
+use actix_web::{put, web, HttpResponse};
 use async_openai::types::ModifyAssistantRequestArgs;
 use serde::{Deserialize, Serialize};
 
@@ -25,7 +25,7 @@ pub async fn update_assistant(
     req: web::Json<UpdateElloRequest>,
     data: web::Data<ClientState>,
     path: web::Path<String>,
-) -> impl Responder {
+) -> Result<HttpResponse, ElloError> {
     // Get a reference to the client from the shared state
     let client = &data.client;
 
@@ -38,14 +38,14 @@ pub async fn update_assistant(
         .instructions(&req.instructions)
         .model(&req.model)
         .build()
-        .unwrap();
+        .map_err(ElloError::from)?;
 
     // Send the assistant modification request and get the response
     let assistant_response = client
         .assistants()
         .update(&assistant_id, modify_request)
         .await
-        .unwrap();
+        .map_err(ElloError::from)?;
 
     // Construct the response body
     let response = UpdateElloResponse {
@@ -53,5 +53,5 @@ pub async fn update_assistant(
     };
 
     // Return the response as JSON
-    HttpResponse::Ok().json(response)
+    Ok(HttpResponse::Ok().json(response))
 }

@@ -1,7 +1,7 @@
 //! Handles the deletion of an assistant.
 
-use crate::ClientState;
-use actix_web::{delete, web, HttpResponse, Responder};
+use crate::{errors::ElloError, ClientState};
+use actix_web::{delete, web, HttpResponse};
 use serde::Serialize;
 
 /// Response body after deleting an assistant.
@@ -15,7 +15,7 @@ pub struct DeleteElloResponse {
 pub async fn delete_assistant(
     data: web::Data<ClientState>, 
     path: web::Path<String>,     
-) -> impl Responder {
+) -> Result<HttpResponse, ElloError> {
     // Get a reference to the client from the shared state
     let client = &data.client;
 
@@ -23,7 +23,7 @@ pub async fn delete_assistant(
     let assistant_id = path.into_inner();
 
     // Send the assistant deletion request and get the response
-    let delete_response = client.assistants().delete(&assistant_id).await.unwrap();
+    let delete_response = client.assistants().delete(&assistant_id).await.map_err(ElloError::from)?;
 
     // Construct the response body
     let response = DeleteElloResponse {
@@ -31,5 +31,5 @@ pub async fn delete_assistant(
     };
 
     // Return the response as JSON
-    HttpResponse::Ok().json(response)
+    Ok(HttpResponse::Ok().json(response))
 }

@@ -1,7 +1,7 @@
 //! Handles the listing of messages in a thread.
 
-use crate::ClientState;
-use actix_web::{get, web, HttpResponse, Responder};
+use crate::{errors::ElloError, ClientState};
+use actix_web::{get, web, HttpResponse};
 use async_openai::types::{MessageContent, MessageRole};
 use serde::Serialize;
 
@@ -17,7 +17,7 @@ pub struct MessageInfo {
 pub async fn list_messages(
     data: web::Data<ClientState>, 
     path: web::Path<String>,    
-) -> impl Responder {
+) -> Result<HttpResponse, ElloError> {
     // Create a query with a limit of 20 messages
     let query = [("limit", "20")];
 
@@ -31,7 +31,7 @@ pub async fn list_messages(
         .messages(&thread_id.clone())
         .list(&query)
         .await
-        .unwrap();
+        .map_err(ElloError::from)?;
 
     // Extract the message objects from the response
     let message_data = messages_response.data;
@@ -47,8 +47,8 @@ pub async fn list_messages(
                     MessageRole::Assistant => "assistant",
                 }
                 .to_string(),
-                text: match message.content.first().unwrap() {
-                    MessageContent::Text(text) => text.text.value.clone(),
+                text: match message.content.first() {
+                    Some(MessageContent::Text(text)) => text.text.value.clone(),
                     _ => "".to_string(),
                 },
             };
@@ -57,5 +57,5 @@ pub async fn list_messages(
         .collect::<Vec<MessageInfo>>(); 
 
     // Return the messages as JSON
-    HttpResponse::Ok().json(messages)
+    Ok(HttpResponse::Ok().json(messages))
 }
