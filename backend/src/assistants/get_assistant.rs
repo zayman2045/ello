@@ -1,7 +1,7 @@
 //! Handles the retrieval of an assistant.
 
-use actix_web::{get, web, HttpResponse, Responder};
 use crate::ClientState;
+use actix_web::{get, web, HttpResponse, Responder};
 use serde::Serialize;
 
 /// Response body after retrieving an assistant.
@@ -17,7 +17,7 @@ pub struct AssistantInfo {
 #[get("assistants/{assistant_id}")]
 pub async fn get_assistant(
     data: web::Data<ClientState>, // Shared state
-    path: web::Path<String>, // Path parameters
+    path: web::Path<String>,      // Path parameters
 ) -> impl Responder {
     // Extract the assistant_id from the path parameters
     let assistant_id = path.into_inner();
@@ -26,13 +26,19 @@ pub async fn get_assistant(
     let client = &data.client;
 
     // Send the assistant retrieval request and get the response
-    let assistant_response = client.assistants().retrieve(&assistant_id).await.unwrap(); // TODO: Handle OpenAIError
+    let assistant_response = client.assistants().retrieve(&assistant_id).await.unwrap();
 
     // Construct the response body
     let assistant_info = AssistantInfo {
         id: assistant_response.id.clone(),
-        name: assistant_response.name.clone().unwrap_or("None".to_string()),
-        instructions: assistant_response.instructions.clone().unwrap_or("None".to_string()),
+        name: assistant_response
+            .name
+            .clone()
+            .unwrap_or("None".to_string()),
+        instructions: assistant_response
+            .instructions
+            .clone()
+            .unwrap_or("None".to_string()),
         model: assistant_response.model.clone(),
     };
 

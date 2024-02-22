@@ -22,27 +22,27 @@ pub async fn run_thread(
         .role("user")
         .content(message)
         .build()
-        .unwrap(); // TODO: Handle OpenAIError
+        .unwrap();
 
     let _message = client
         .threads()
         .messages(&thread_id)
         .create(message_request)
         .await
-        .unwrap(); // TODO: Handle OpenAIError
+        .unwrap();
 
     // Create a run
     let run_request = CreateRunRequestArgs::default()
         .assistant_id(assistant_id)
         .build()
-        .unwrap(); // TODO: Handle OpenAIError
+        .unwrap();
 
     let run = client
         .threads()
         .runs(&thread_id)
         .create(run_request)
         .await
-        .unwrap(); // TODO: Handle OpenAIError
+        .unwrap();
 
     // Wait for the run to complete
     let mut awaiting_response = true;
@@ -54,7 +54,7 @@ pub async fn run_thread(
             .runs(&thread_id)
             .retrieve(&run.id)
             .await
-            .unwrap(); // TODO: Handle OpenAIError
+            .unwrap();
 
         // Check the status of the run
         match run.status {
@@ -67,7 +67,7 @@ pub async fn run_thread(
                     .messages(&thread_id)
                     .list(&query)
                     .await
-                    .unwrap(); // TODO: Handle OpenAIError
+                    .unwrap();
 
                 // Get the latest message id from the response (id of the first message in the list)
                 let message_id = response.data.get(0).unwrap().id.clone();
@@ -78,7 +78,7 @@ pub async fn run_thread(
                     .messages(&thread_id)
                     .retrieve(&message_id)
                     .await
-                    .unwrap(); // TODO: Handle OpenAIError
+                    .unwrap();
 
                 // Get the content from the message
                 let content = message.content.get(0).unwrap();
@@ -90,18 +90,18 @@ pub async fn run_thread(
                 };
             }
             RunStatus::Failed => {
-                awaiting_response = false; // TODO: Handle OpenAIError
+                awaiting_response = false;
             }
             RunStatus::Queued => {}
             RunStatus::Cancelling => {}
             RunStatus::Cancelled => {
-                awaiting_response = false; // TODO: Handle OpenAIError
+                awaiting_response = false;
             }
             RunStatus::Expired => {
-                awaiting_response = false; // TODO: Handle OpenAIError
+                awaiting_response = false;
             }
             RunStatus::RequiresAction => {
-                awaiting_response = false; // TODO: Handle OpenAIError
+                awaiting_response = false;
             }
             RunStatus::InProgress => {}
         }

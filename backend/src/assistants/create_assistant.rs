@@ -31,7 +31,7 @@ pub async fn create_assistant(
         .instructions(&req.instructions)
         .model(&req.model)
         .build()
-        .unwrap(); // TODO: Handle OpenAIError
+        .unwrap();
 
     // Send the assistant creation request and get the response
     let assistant = data
@@ -39,7 +39,7 @@ pub async fn create_assistant(
         .assistants()
         .create(assistant_request)
         .await
-        .unwrap(); // TODO: Handle OpenAIError
+        .unwrap();
 
     // Construct the response body
     let response = CreateElloResponse {

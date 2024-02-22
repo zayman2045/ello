@@ -1,9 +1,8 @@
 //! Handles the querying of an assistant.
 
-use actix_web::{post, web, Responder, HttpResponse};
+use crate::{threads::run_thread::run_thread, ClientState};
+use actix_web::{post, web, HttpResponse, Responder};
 use serde::{Deserialize, Serialize};
-use crate::{ClientState, threads::run_thread::run_thread};
-
 
 /// Request body for querying an assistant.
 #[derive(Deserialize)]
@@ -22,8 +21,8 @@ pub struct QueryElloResponse {
 #[post("/assistants/{assistant_id}")]
 pub async fn query_assistant(
     req: web::Json<QueryElloRequest>, // Request body
-    data: web::Data<ClientState>, // Shared state
-    path: web::Path<String>, // Path parameters
+    data: web::Data<ClientState>,     // Shared state
+    path: web::Path<String>,          // Path parameters
 ) -> impl Responder {
     // Extract the assistant_id from the path parameters
     let assistant_id = path.into_inner();
@@ -36,7 +35,9 @@ pub async fn query_assistant(
     let client = &data.client;
 
     // Run the thread and get the response message
-    let response_message = run_thread(client, assistant_id, thread_id, request_message).await.unwrap(); // TODO: Handle OpenAIError
+    let response_message = run_thread(client, assistant_id, thread_id, request_message)
+        .await
+        .unwrap();
 
     // Construct the response body
     let response = QueryElloResponse {

@@ -3,7 +3,7 @@
 use crate::ClientState;
 use actix_web::{put, web, HttpResponse, Responder};
 use async_openai::types::ModifyAssistantRequestArgs;
-use serde::{Serialize, Deserialize};
+use serde::{Deserialize, Serialize};
 
 /// Request body for editing an assistant.
 #[derive(Deserialize)]
@@ -23,8 +23,8 @@ pub struct UpdateElloResponse {
 #[put("/assistants/{assistant_id}")]
 pub async fn update_assistant(
     req: web::Json<UpdateElloRequest>, // Request body
-    data: web::Data<ClientState>, // Shared state
-    path: web::Path<String>, // Path parameters
+    data: web::Data<ClientState>,      // Shared state
+    path: web::Path<String>,           // Path parameters
 ) -> impl Responder {
     // Get a reference to the client from the shared state
     let client = &data.client;
@@ -38,14 +38,14 @@ pub async fn update_assistant(
         .instructions(&req.instructions)
         .model(&req.model)
         .build()
-        .unwrap(); // TODO: Handle OpenAIError
+        .unwrap();
 
     // Send the assistant modification request and get the response
     let assistant_response = client
         .assistants()
         .update(&assistant_id, modify_request)
         .await
-        .unwrap(); // TODO: Handle OpenAIError
+        .unwrap();
 
     // Construct the response body
     let response = UpdateElloResponse {

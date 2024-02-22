@@ -14,7 +14,7 @@ pub struct DeleteElloResponse {
 #[delete("/assistants/{assistant_id}")]
 pub async fn delete_assistant(
     data: web::Data<ClientState>, // Shared state
-    path: web::Path<String>, // Path parameters
+    path: web::Path<String>,      // Path parameters
 ) -> impl Responder {
     // Get a reference to the client from the shared state
     let client = &data.client;
@@ -23,11 +23,7 @@ pub async fn delete_assistant(
     let assistant_id = path.into_inner();
 
     // Send the assistant deletion request and get the response
-    let delete_response = client
-        .assistants()
-        .delete(&assistant_id)
-        .await
-        .unwrap(); // TODO: Handle OpenAIError
+    let delete_response = client.assistants().delete(&assistant_id).await.unwrap();
 
     // Construct the response body
     let response = DeleteElloResponse {

@@ -1,9 +1,9 @@
 //! Handles the listing of messages in a thread.
 
-use actix_web::{get, web, Responder, HttpResponse};
-use async_openai::types::{MessageRole, MessageContent};
-use serde::Serialize;
 use crate::ClientState;
+use actix_web::{get, web, HttpResponse, Responder};
+use async_openai::types::{MessageContent, MessageRole};
+use serde::Serialize;
 
 /// Response body structure for listing messages.
 #[derive(Serialize)]
@@ -16,7 +16,7 @@ pub struct MessageInfo {
 #[get("/threads/{thread_id}")]
 pub async fn list_messages(
     data: web::Data<ClientState>, // Shared state
-    path: web::Path<String>, // Path parameters
+    path: web::Path<String>,      // Path parameters
 ) -> impl Responder {
     // Create a query with a limit of 20 messages
     let query = [("limit", "20")];
@@ -25,12 +25,13 @@ pub async fn list_messages(
     let thread_id = path.into_inner();
 
     // Send the message list request and get the response
-    let messages_response = data.client
+    let messages_response = data
+        .client
         .threads()
         .messages(&thread_id.clone())
         .list(&query)
         .await
-        .unwrap(); // TODO: Handle OpenAIError
+        .unwrap();
 
     // Extract the message objects from the response
     let message_data = messages_response.data;
@@ -44,7 +45,8 @@ pub async fn list_messages(
                 role: match message.role {
                     MessageRole::User => "user",
                     MessageRole::Assistant => "assistant",
-                }.to_string(),
+                }
+                .to_string(),
                 text: match message.content.first().unwrap() {
                     MessageContent::Text(text) => text.text.value.clone(),
                     _ => "".to_string(),
