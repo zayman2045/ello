@@ -6,7 +6,7 @@ use actix_web::{get, web, HttpResponse, Responder};
 
 /// Lists all assistants.
 #[get("/assistants")]
-pub async fn list_assistants(data: web::Data<ClientState>, // Shared state
+pub async fn list_assistants(data: web::Data<ClientState>, 
 ) -> impl Responder {
     // Create a query with a limit of 20 assistants
     let query = [("limit", "20")];
@@ -33,7 +33,7 @@ pub async fn list_assistants(data: web::Data<ClientState>, // Shared state
             };
             assistant_info
         })
-        .collect::<Vec<AssistantInfo>>(); // Collect the AssistantInfo structs into a Vec
+        .collect::<Vec<AssistantInfo>>(); 
 
     // Return the assistants as JSON
     HttpResponse::Ok().json(assistants)

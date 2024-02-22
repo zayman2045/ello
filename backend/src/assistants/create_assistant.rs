@@ -22,8 +22,8 @@ pub struct CreateElloResponse {
 /// Creates a new assistant and returns its id.
 #[post("/assistants")]
 pub async fn create_assistant(
-    req: web::Json<CreateElloRequest>, // Request body
-    data: web::Data<ClientState>,      // Shared state
+    req: web::Json<CreateElloRequest>,
+    data: web::Data<ClientState>,
 ) -> impl Responder {
     // Construct the assistant creation request
     let assistant_request = CreateAssistantRequestArgs::default()

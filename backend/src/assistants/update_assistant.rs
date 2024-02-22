@@ -22,9 +22,9 @@ pub struct UpdateElloResponse {
 /// Edits an existing assistant and returns its id.
 #[put("/assistants/{assistant_id}")]
 pub async fn update_assistant(
-    req: web::Json<UpdateElloRequest>, // Request body
-    data: web::Data<ClientState>,      // Shared state
-    path: web::Path<String>,           // Path parameters
+    req: web::Json<UpdateElloRequest>,
+    data: web::Data<ClientState>,
+    path: web::Path<String>,
 ) -> impl Responder {
     // Get a reference to the client from the shared state
     let client = &data.client;

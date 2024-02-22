@@ -13,7 +13,7 @@ pub struct CreateThreadResponse {
 
 /// Creates a new thread and returns the thread id.
 #[post("/threads")]
-pub async fn create_thread(data: web::Data<ClientState>, // Shared state
+pub async fn create_thread(data: web::Data<ClientState>,
 ) -> impl Responder {
     // Create a default thread request
     let thread_request = CreateThreadRequestArgs::default().build().unwrap();

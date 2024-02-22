@@ -16,8 +16,8 @@ pub struct AssistantInfo {
 /// Retrieves an assistant and returns its info.
 #[get("assistants/{assistant_id}")]
 pub async fn get_assistant(
-    data: web::Data<ClientState>, // Shared state
-    path: web::Path<String>,      // Path parameters
+    data: web::Data<ClientState>, 
+    path: web::Path<String>,      
 ) -> impl Responder {
     // Extract the assistant_id from the path parameters
     let assistant_id = path.into_inner();

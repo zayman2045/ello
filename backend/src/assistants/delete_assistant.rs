@@ -13,8 +13,8 @@ pub struct DeleteElloResponse {
 /// Deletes an assistant and returns its id.
 #[delete("/assistants/{assistant_id}")]
 pub async fn delete_assistant(
-    data: web::Data<ClientState>, // Shared state
-    path: web::Path<String>,      // Path parameters
+    data: web::Data<ClientState>, 
+    path: web::Path<String>,     
 ) -> impl Responder {
     // Get a reference to the client from the shared state
     let client = &data.client;

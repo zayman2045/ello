@@ -20,9 +20,9 @@ pub struct QueryElloResponse {
 /// Queries an assistant and returns its response message and thread_id.
 #[post("/assistants/{assistant_id}")]
 pub async fn query_assistant(
-    req: web::Json<QueryElloRequest>, // Request body
-    data: web::Data<ClientState>,     // Shared state
-    path: web::Path<String>,          // Path parameters
+    req: web::Json<QueryElloRequest>,
+    data: web::Data<ClientState>,
+    path: web::Path<String>,
 ) -> impl Responder {
     // Extract the assistant_id from the path parameters
     let assistant_id = path.into_inner();

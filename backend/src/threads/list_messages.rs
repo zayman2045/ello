@@ -15,8 +15,8 @@ pub struct MessageInfo {
 /// Lists all messages in a specific thread.
 #[get("/threads/{thread_id}")]
 pub async fn list_messages(
-    data: web::Data<ClientState>, // Shared state
-    path: web::Path<String>,      // Path parameters
+    data: web::Data<ClientState>, 
+    path: web::Path<String>,    
 ) -> impl Responder {
     // Create a query with a limit of 20 messages
     let query = [("limit", "20")];
@@ -54,7 +54,7 @@ pub async fn list_messages(
             };
             message_info
         })
-        .collect::<Vec<MessageInfo>>(); // Collect the MessageInfo structs into a Vec
+        .collect::<Vec<MessageInfo>>(); 
 
     // Return the messages as JSON
     HttpResponse::Ok().json(messages)
