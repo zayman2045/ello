@@ -9,13 +9,17 @@ def home(request):
     """
     return render(request, 'home.html')
 
-# Render the dashboard populated with the list of assistants
 def dashboard(request):
+    """
+    Render the dashboard populated with the list of assistants.
+    """
     assistant_list = get_assistant_list()
     return render(request, 'dashboard.html', {'assistant_list': assistant_list, 'hide_form': True})
 
-# Render the specified assistant's dashboard populated with the assistant's info
 def assistant_dashboard(request, assistant_id):
+    """
+    Render the specified assistant's dashboard populated with the assistant's info.
+    """
     if request.method == 'GET':
         assistant_list = get_assistant_list()
         assistant_info = get_assistant_info(assistant_id)
@@ -28,9 +32,10 @@ def assistant_dashboard(request, assistant_id):
         messages = query_assistant(assistant_id, form_data)
         return render(request, 'dashboard.html', {'assistant_list': assistant_list, 'assistant_info': assistant_info, 'thread_id': request.POST['thread_id'], 'messages': messages})
 
-
-# Render the assistant creation page and handle the creation of a new assistant
 def assistant_create(request):
+    """
+    Render the assistant creation page and handle the creation of a new assistant.
+    """
     if request.method == 'GET':
         return render(request, 'build.html')
     if request.method == 'POST':
@@ -38,9 +43,10 @@ def assistant_create(request):
         response = create_assistant(form_data)
         return dashboard(request)
 
-
-# Render the assistant edit page and handle the editing of an assistant
 def assistant_edit(request, assistant_id):
+    """
+    Render the assistant edit page and handle the editing of an assistant.
+    """
     if request.method == 'GET':
         assistant_info = get_assistant_info(assistant_id)
         return render(request, 'build.html', {'assistant_info': assistant_info})
@@ -48,9 +54,11 @@ def assistant_edit(request, assistant_id):
         form_data = request.POST
         edit_response = edit_assistant(assistant_id, form_data)
         return dashboard(request)
-    
-# Render the assistant deletion page and handle the deletion of an assistant
+
 def assistant_delete(request, assistant_id):
+    """
+    Render the assistant deletion page and handle the deletion of an assistant.
+    """
     if request.method == 'GET':
         assistant_info = get_assistant_info(assistant_id)
         return render(request, 'confirm_delete.html', {'assistant_info': assistant_info})
