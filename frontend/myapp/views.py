@@ -3,8 +3,10 @@ from django.shortcuts import render
 
 ## VIEWS ##
 
-# Render the home page
 def home(request):
+    """
+    Render the home page.
+    """
     return render(request, 'home.html')
 
 # Render the dashboard populated with the list of assistants
